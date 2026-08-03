@@ -40,6 +40,7 @@ public class Noname implements ModInitializer {
         ServerTickEvents.START_SERVER_TICK.register(KilledAnimalsLootHandler::onServerTick);
         ServerTickEvents.START_SERVER_TICK.register(Day4KnifeHandler::onServerTick);
         ServerTickEvents.START_SERVER_TICK.register(Day3TimeSkipHandler::onServerTick);
+        ServerTickEvents.START_SERVER_TICK.register(Day2NullJoinHandler::onServerTick);
         ServerTickEvents.START_SERVER_TICK.register(Day7FakePlayerHandler::onServerTick);
         ServerTickEvents.START_SERVER_TICK.register(HostileMobHandler::onServerTick);
         ServerTickEvents.START_SERVER_TICK.register(NamedMobBehaviourHandler::onServerTick);

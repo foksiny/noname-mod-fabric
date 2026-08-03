@@ -22,6 +22,20 @@ public final class FakePlayerUtil {
     /** Tab list display name — shown in the player list. */
     public static final String FAKE_TAB_NAME = "你的朋友";
 
+    /**
+     * Fixed UUID of the day-2 {@code null} visitor. Kept constant so the
+     * client-side black skin replacement can recognize it. Distinct from
+     * {@link #FAKE_UUID} so the two fake players never clash in the player
+     * list if they coexist (e.g. via {@code /noname event play}).
+     */
+    public static final UUID NULL_UUID =
+            UUID.fromString("0b1e2f3a-4d5c-6b7a-8901-234567890abc");
+
+    /** Profile name of the day-2 {@code null} visitor, shown both in the
+     *  vanilla "{@code null joined the game}" / "{@code null left the game}"
+     *  messages and as the {@code <null> ...} chat prefix. */
+    public static final String NULL_NAME = "null";
+
     private FakePlayerUtil() {
     }
 }

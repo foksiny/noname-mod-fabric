@@ -63,6 +63,7 @@ public final class NonameCommand {
             "sign_place",        // place one creepy sign near each player
             "door_creak",        // toggle the closest door near each player
             "day3_timeskip",     // day-3 midday -> sudden jump to night (19:00)
+            "day2_null_join",    // day-2 midday -> "null" joins, sorry chat, then leaves
             "day6_static",       // day-6 midday -> static overlay + text sequence
             "day10_look",        // day-10+ lag event: look behind + fake player
             "day11_chest",       // day-11+ mystery chest above an oak plank
@@ -170,6 +171,7 @@ public final class NonameCommand {
         addGate(sb, day, 1, Long.MAX_VALUE, "classic (alpha) textures & sounds", "always");
         addGate(sb, day, 1, Long.MAX_VALUE, "villages & golems removed", "day 1+");
         addGate(sb, day, 2, 2, "sleeping blocked", "day 2");
+        addGate(sb, day, 2, 2, "midday \"null\" visitor (join + chat + leave)", "day 2");
         sb.append("    day 2   day-2 creep (client) .......... ")
                 .append(clientGateStatus(day, 2)).append('\n');
         addGate(sb, day, 3, 3, "sudden midday -> night time-skip", "day 3");
@@ -189,7 +191,7 @@ public final class NonameCommand {
         addGate(sb, day, 8, Long.MAX_VALUE, "flesh trees (3 in 128 chunks)", "day 8+");
         addGate(sb, day, 8, Long.MAX_VALUE, "red sky: heavy fog + VHS (15% per 1-3 min, client)", "day 8+");
         addGate(sb, day, 9, Long.MAX_VALUE, "creepy signs (15% per 2-4 min)", "day 9+");
-        addGate(sb, day, 4, Long.MAX_VALUE, "doors creak open/closed (15% per 2-4 min)", "day 4+");
+        addGate(sb, day, 4, Long.MAX_VALUE, "doors creak (20%/2-4m, 45% rapid spam)", "day 4+");
         addGate(sb, day, 10, Long.MAX_VALUE, "red rain (always)", "day 10+");
         addGate(sb, day, 10, Long.MAX_VALUE, "lag event: look behind, fake player (30% per 3-6 min)", "day 10+");
         addGate(sb, day, 11, Long.MAX_VALUE, "mystery chests (5% per 2-4 min)", "day 11+");

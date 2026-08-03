@@ -65,6 +65,7 @@ public final class NonameClient implements ClientModInitializer {
                     @Override
                     public void onResourceManagerReload(ResourceManager manager) {
                         FakeSkin.reinstall();
+                        NullSkin.reinstall();
                         VhsOverlay.reinstall();
                         HeIsHereOverlay.reinstall();
                     }
