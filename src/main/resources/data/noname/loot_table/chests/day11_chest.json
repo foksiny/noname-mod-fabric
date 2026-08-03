@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "noname:blood_flesh_block",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "noname:dot",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "noname:knife",
+          "weight": 1
+        }
+      ]
+    }
+  ]
+}

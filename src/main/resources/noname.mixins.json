@@ -1,0 +1,44 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.noname.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "FogColorMixin",
+    "HeavyFogMixin",
+    "ContrastMixin",
+    "LightTextureMixin",
+    "SkinManagerMixin",
+    "Day10LookCameraMixin",
+    "Day10LookZoomMixin",
+    "Day10LookInputMixin",
+    "Day10LookTickMixin",
+    "Day10LookHudMixin",
+    "SplashRendererMixin",
+    "RedRainMixin",
+    "PigRendererTintMixin",
+    "GameRendererAccessor",
+    "VhsGlassesMixin",
+    "ChannelMixin"
+  ],
+  "mixins": [
+    "ConnectionAccessor",
+    "BedUseMixin",
+    "BlockDropMixin",
+    "ChunkGenFleshTreeMixin",
+    "ChunkGenPillarMixin",
+    "FoliagePlacerMixin",
+    "MobSpawnMixin",
+    "HostileSpawnGateMixin",
+    "HostileWorldGenGateMixin",
+    "NamedMobMixin",
+    "Day5PigMixin",
+    "PigInfectionMixin",
+    "TreeFeatureMixin",
+    "VillageMixin",
+    "WorldGenVillageMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

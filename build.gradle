@@ -1,0 +1,139 @@
+plugins {
+    id 'java-library'
+    id 'idea'
+    id 'maven-publish'
+    id 'fabric-loom' version "${loom_version}"
+}
+
+version = mod_version
+group = mod_group_id
+
+base {
+    archivesName = mod_id
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+    withSourcesJar()
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Minecraft itself + official Mojang mappings (the code is written against
+    // Mojmap names, so no parchment is needed).
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.officialMojangMappings()
+
+    modImplementation "net.fabricmc:fabric-loader:${loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+}
+
+// Replace ${...} placeholders in fabric.mod.json at build time.
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version
+    }
+}
+// The game resolves its "vanilla" resource/data packs from the *first* assets or
+// data directory it finds on the classpath (VanillaPackResourcesBuilder ->
+// Class.getResource). In this Loom dev run that directory happens to be an
+// unrelated fabric-api jar's empty assets folder, so stock assets (shaders,
+// models, blockstates, textures, sounds, ...) are missing from the vanilla pack
+// and the mod must not rely on them being served by the game jar.
+//
+// This task "re-installs" the stock Minecraft assets straight into our own
+// resource pack (build/resources/main), which makes the mod the vanilla
+// provider and keeps resource lookup deterministic (no classpath ordering
+// surprises). It goes through each path as follows:
+//   - non-lang stock asset: only written if it does not already exist in our
+//     tree, so any custom asset the mod itself ships is left untouched and
+//     keeps precedence;
+//   - lang/*.json: MERGED, never skipped. A stock language key is added only
+//     if the mod does not already override it, so the mod's own strings hold
+//     while the rest of the vanilla language (e.g. "menu.multiplayer") appears.
+// Memory is kept low by streaming file-by-file from the jar.
+//
+// It runs AFTER processResources so the mod's own files are already in place
+// when the merge happens, and runClient depends on it.
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
+tasks.register('installVanillaAssets') {
+    dependsOn 'processResources'
+    outputs.upToDateWhen { false }
+    doLast {
+        def gameJar = tasks.named('runClient').get().classpath.files.find { f ->
+            f.isFile() && f.name.startsWith('minecraft-merged-') && f.name.endsWith('.jar')
+        }
+        if (gameJar == null) {
+            return
+        }
+        def outRoot = layout.buildDirectory.dir('resources/main').get().asFile
+        new java.util.zip.ZipFile(gameJar).withCloseable { zip ->
+            zip.entries().each { e ->
+                if (e.isDirectory()) {
+                    return
+                }
+                def name = e.name
+                if (!(name.startsWith('assets/') || name.startsWith('data/')) || name.contains('..')) {
+                    return
+                }
+                def target = new File(outRoot, name)
+                target.parentFile.mkdirs()
+                boolean isLang = name.startsWith('assets/') && name.indexOf('/lang/') >= 0 && name.endsWith('.json')
+                if (!isLang) {
+                    // Only add missing files; never overwrite the mod's own ones.
+                    if (target.exists()) {
+                        return
+                    }
+                    target.withOutputStream { out ->
+                        zip.getInputStream(e).withCloseable { it.transferTo(out) }
+                    }
+                } else {
+                    // Merge this file: keep any mod-defined value, fill in the
+                    // vanilla keys that are missing.
+                    def merged = [:]
+                    if (target.exists()) {
+                        try {
+                            new JsonSlurper().parse(target).each { k, v -> merged[k] = v }
+                        } catch (Exception ignored) {
+                            // Corrupt/broken mod file: the vanilla content below
+                            // will end up replacing it entirely.
+                        }
+                    }
+                    new JsonSlurper().parse(zip.getInputStream(e)).each { k, v ->
+                        if (!merged.containsKey(k)) {
+                            merged[k] = v
+                        }
+                    }
+                    target.text = JsonOutput.prettyPrint(JsonOutput.toJson(merged))
+                }
+            }
+        }
+    }
+}
+
+tasks.named('runClient') {
+    dependsOn 'installVanillaAssets'
+}
+
+
+// Publish to a local Maven repo if desired
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url = 'file://' + System.getenv('HOME') + '/.m2/repository'
+        }
+    }
+}

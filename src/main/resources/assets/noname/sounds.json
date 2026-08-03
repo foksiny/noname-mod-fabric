@@ -1,0 +1,100 @@
+{
+  "it_hurts_to_see": {
+    "category": "ambient",
+    "subtitle": "subtitles.noname.it_hurts_to_see",
+    "sounds": [
+      { "name": "noname:it_hurts_to_see/it_hurts_to_see", "stream": false }
+    ]
+  },
+  "creepy_bass": {
+    "category": "ambient",
+    "subtitle": "subtitles.noname.creepy_bass",
+    "sounds": [
+      { "name": "noname:creepy_bass/creepy_bass", "stream": false }
+    ]
+  },
+  "day5_flash": {
+    "category": "ambient",
+    "subtitle": "subtitles.noname.day5_flash",
+    "sounds": [
+      { "name": "noname:day5_flash/day5_flash", "stream": false }
+    ]
+  },
+  "day7_fake": {
+    "category": "ambient",
+    "subtitle": "subtitles.noname.day7_fake",
+    "sounds": [
+      { "name": "noname:day7_fake/day7_fake", "stream": false }
+    ]
+  },
+  "tearing_flesh": {
+    "category": "hostile",
+    "subtitle": "subtitles.noname.tearing_flesh",
+    "sounds": [
+      { "name": "noname:tearing_flesh/tearing_flesh", "stream": false }
+    ]
+  },
+  "horror_ambience": {
+    "category": "ambient",
+    "subtitle": "subtitles.noname.horror_ambience",
+    "sounds": [
+      { "name": "noname:horror_ambience/horror_ambience", "stream": true }
+    ]
+  },
+  "laggy3": {
+    "category": "ambient",
+    "subtitle": "subtitles.noname.laggy3",
+    "sounds": [
+      { "name": "noname:laggy3/laggy3", "stream": false }
+    ]
+  },
+  "he_is_here": {
+    "category": "ambient",
+    "subtitle": "subtitles.noname.he_is_here",
+    "sounds": [
+      { "name": "noname:he_is_here/he_is_here", "stream": true }
+    ]
+  },
+  "he_is_here_25": {
+    "category": "ambient",
+    "subtitle": "subtitles.noname.he_is_here_25",
+    "sounds": [
+      { "name": "noname:he_is_here/he_is_here_25", "stream": true }
+    ]
+  },
+  "laggy1": {
+    "category": "ambient",
+    "subtitle": "subtitles.noname.laggy1",
+    "sounds": [
+      { "name": "noname:laggy1/laggy1", "stream": false }
+    ]
+  },
+  "day6_static": {
+    "category": "ambient",
+    "subtitle": "subtitles.noname.day6_static",
+    "sounds": [
+      { "name": "noname:day6_static/day6_static", "stream": true }
+    ]
+  },
+  "day6_blip": {
+    "category": "ambient",
+    "subtitle": "subtitles.noname.day6_blip",
+    "sounds": [
+      { "name": "noname:day6_blip/day6_blip", "stream": false }
+    ]
+  },
+  "tape_motor": {
+    "category": "ambient",
+    "subtitle": "subtitles.noname.tape_motor",
+    "sounds": [
+      { "name": "noname:tape_motor/tape_motor", "stream": true }
+    ]
+  },
+  "day6_laughs": {
+    "category": "ambient",
+    "subtitle": "subtitles.noname.day6_laughs",
+    "sounds": [
+      { "name": "noname:day6_laughs/day6_laughs", "stream": false }
+    ]
+  }
+}

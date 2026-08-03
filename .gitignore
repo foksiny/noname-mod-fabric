@@ -1,0 +1,22 @@
+# Gradle
+.gradle/
+build/
+out/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+eclipse/
+.classpath
+.project
+.settings/
+
+# Minecraft dev runs
+run/
+
+# Data generation output
+src/generated/
+
+# OS
+.DS_Store

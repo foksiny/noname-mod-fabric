@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "noname",
+  "version": "${version}",
+  "name": "Noname",
+  "description": "Base Fabric mod for Minecraft 1.21.1.",
+  "authors": [
+    "YourName"
+  ],
+  "license": "All Rights Reserved",
+  "icon": "noname.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dev.noname.Noname"
+    ],
+    "client": [
+      "dev.noname.client.NonameClient"
+    ]
+  },
+  "mixins": [
+    "noname.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

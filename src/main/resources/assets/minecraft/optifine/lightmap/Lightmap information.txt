@@ -1,0 +1,13 @@
+Lightmap information
+
+Old Lighting (torch & sky)
+Overworld: world0.png
+Nether: world-1.png
+The End: world1.png
+
+New lighting (torch) with old lighting (sky)
+Overworld: world0warm.png - To use delete world0.png and rename world0warm.png as world0.png
+Nether: world-1warm.png - To use delete world-1.png and rename world0-1warm.png as world-1.png
+The End: world1warm.png - To use delete world1.png and rename world1warm.png as world1.png
+
+Made by Sencie https://www.planetminecraft.com/texture-pack/old-lighting-amp-old-water/

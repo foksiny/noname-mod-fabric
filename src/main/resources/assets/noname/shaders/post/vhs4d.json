@@ -1,0 +1,18 @@
+{
+    "targets": [
+        "swap"
+    ],
+    "passes": [
+        {
+            "name": "vhs4d",
+            "intarget": "minecraft:main",
+            "outtarget": "swap",
+            "resolution": { "x": 0.5, "y": 0.5, "z": 1.0 }
+        },
+        {
+            "name": "blit",
+            "intarget": "swap",
+            "outtarget": "minecraft:main"
+        }
+    ]
+}

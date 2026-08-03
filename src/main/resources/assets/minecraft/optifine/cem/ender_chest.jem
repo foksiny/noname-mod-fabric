@@ -1,0 +1,45 @@
+{
+	"texture": "ender.png",
+	"textureSize": [64, 64],
+	"models": [
+		{
+			"part": "lid",
+			"id": "lid",
+			"invertAxis": "xy",
+			"translate": [-8, -3, 8],
+			"rotate": [-180, 0, 0]
+		},
+		{
+			"part": "base",
+			"id": "base",
+			"invertAxis": "xy",
+			"translate": [-8, 0, 8],
+			"rotate": [-180, 0, 0],
+			"boxes": [
+				{"coordinates": [-8, 0, -8, 16, 11, 16], "textureOffset": [0, 37]}
+			],
+			"submodels": [
+				{
+					"id": "lid_base",
+					"invertAxis": "xy",
+					"translate": [-10, 10, 7],
+					"boxes": [
+						{"coordinates": [2, 1, -15, 16, 5, 16], "textureOffset": [0, 16]}
+					]
+				},
+				{
+					"id": "knob_base",
+					"invertAxis": "xy",
+					"translate": [-10, 10, 7]
+				}
+			]
+		},
+		{
+			"part": "knob",
+			"id": "knob",
+			"invertAxis": "xy",
+			"translate": [-8, -1, 16],
+			"rotate": [-180, 0, 0]
+		}
+	]
+}
