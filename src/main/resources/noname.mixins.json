@@ -22,7 +22,9 @@
     "VhsGlassesMixin",
     "ChannelMixin",
     "SoundPhysicsCompatMixin",
-    "BedNameMixin"
+    "BedNameMixin",
+    "AbstractButtonAccessor",
+    "MenuButtonGlitchMixin"
   ],
   "mixins": [
     "ConnectionAccessor",
