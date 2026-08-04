@@ -57,7 +57,9 @@
     "FasterDayCycleMixin",
     "OverworldBiomeGateMixin",
     "OverworldBiomeBuilderAccessor",
-    "RecipeManagerMixin"
+    "RecipeManagerMixin",
+    "WolfVariantsMixin",
+    "AxeItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1
