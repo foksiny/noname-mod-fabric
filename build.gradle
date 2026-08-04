@@ -31,6 +31,14 @@ dependencies {
 
     modImplementation "net.fabricmc:fabric-loader:${loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+
+    // Sound Physics Remastered, compile-only. The mod is not published to any
+    // Maven, so the (small) jar lives in libs/ and is only used to satisfy the
+    // mixin annotation processor when it resolves the class referenced by
+    // SoundPhysicsCompatMixin's string target. It is never bundled and never
+    // needed at runtime; NonameMixinPlugin skips the compat mixin when SPR is
+    // not installed.
+    compileOnly files('libs/sound-physics-remastered-fabric-1.21.1-1.5.1.jar')
 }
 
 // Replace ${...} placeholders in fabric.mod.json at build time.
@@ -60,7 +68,10 @@ processResources {
 // Memory is kept low by streaming file-by-file from the jar.
 //
 // It runs AFTER processResources so the mod's own files are already in place
-// when the merge happens, and runClient depends on it.
+// when the merge happens, and both runClient and the packaged jar depend on
+// it: without the merged language file the game falls back to showing raw
+// translation keys (e.g. "menu.quit") because there is no other pack serving
+// the vanilla strings.
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
@@ -69,10 +80,15 @@ tasks.register('installVanillaAssets') {
     outputs.upToDateWhen { false }
     doLast {
         def gameJar = tasks.named('runClient').get().classpath.files.find { f ->
-            f.isFile() && f.name.startsWith('minecraft-merged-') && f.name.endsWith('.jar')
+            f.isFile() && f.name.startsWith('minecraft-merged') && f.name.endsWith('.jar')
         }
         if (gameJar == null) {
-            return
+            // Never fail silently: a missing game jar would leave the mod pack
+            // without vanilla assets/language and every translation key would
+            // render raw. Call it out instead of shipping a broken pack.
+            throw new GradleException(
+                    'Could not locate the minecraft-merged jar on the runClient classpath; ' +
+                    'vanilla assets and language can not be installed into the mod pack.')
         }
         def outRoot = layout.buildDirectory.dir('resources/main').get().asFile
         new java.util.zip.ZipFile(gameJar).withCloseable { zip ->
@@ -120,6 +136,14 @@ tasks.register('installVanillaAssets') {
 }
 
 tasks.named('runClient') {
+    dependsOn 'installVanillaAssets'
+}
+
+// Package the merged vanilla assets and language into the built mod jar as
+// well, not just into the dev run: the mod doubles as the vanilla resource
+// provider, so a jar without the full language shows raw keys like
+// "menu.quit" instead of "Quit".
+tasks.named('jar') {
     dependsOn 'installVanillaAssets'
 }
 

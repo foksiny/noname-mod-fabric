@@ -3,6 +3,7 @@
   "minVersion": "0.8",
   "package": "dev.noname.mixin",
   "compatibilityLevel": "JAVA_17",
+  "plugin": "dev.noname.mixin.NonameMixinPlugin",
   "client": [
     "FogColorMixin",
     "HeavyFogMixin",
@@ -19,7 +20,9 @@
     "PigRendererTintMixin",
     "GameRendererAccessor",
     "VhsGlassesMixin",
-    "ChannelMixin"
+    "ChannelMixin",
+    "SoundPhysicsCompatMixin",
+    "BedNameMixin"
   ],
   "mixins": [
     "ConnectionAccessor",
@@ -36,7 +39,23 @@
     "PigInfectionMixin",
     "TreeFeatureMixin",
     "VillageMixin",
-    "WorldGenVillageMixin"
+    "WorldGenVillageMixin",
+    "SprintGateMixin",
+    "ShieldBlockMixin",
+    "OffhandBlockMixin",
+    "PlayerOffhandBlockMixin",
+    "GameModeOffhandBlockMixin",
+    "AttackCooldownMixin",
+    "SweepAttackMixin",
+    "ElytraBlockMixin",
+    "TotemBlockMixin",
+    "RecentMobGateMixin",
+    "RecentMobWorldGenGateMixin",
+    "NoCopperOreMixin",
+    "FasterDayCycleMixin",
+    "OverworldBiomeGateMixin",
+    "OverworldBiomeBuilderAccessor",
+    "RecipeManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

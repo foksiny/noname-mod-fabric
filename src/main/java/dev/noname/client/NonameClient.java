@@ -41,6 +41,7 @@ public final class NonameClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register(Day8SkyOverlay::onHudRender);
         HudRenderCallback.EVENT.register(HeIsHereOverlay::onHudRender);
         HudRenderCallback.EVENT.register(VersionOverlay::onHudRender);
+        HudRenderCallback.EVENT.register(DayCounterOverlay::onHudRender);
         ScreenEvents.AFTER_INIT.register(ButtonRestrictionsHandler::onScreenInit);
 
         // Blood drops from dying named mobs.

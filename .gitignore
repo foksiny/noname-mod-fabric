@@ -18,5 +18,9 @@ run/
 # Data generation output
 src/generated/
 
+# Vendored compile-only jars (e.g. Sound Physics Remastered in libs/)
+libs/
+bin/
+
 # OS
 .DS_Store

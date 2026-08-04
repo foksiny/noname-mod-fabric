@@ -1,6 +1,7 @@
 package dev.noname.mixin;
 
 import com.mojang.blaze3d.audio.Channel;
+import dev.noname.client.VhsFilterManager;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.EXTEfx;
 import org.spongepowered.asm.mixin.Final;
@@ -52,6 +53,9 @@ public abstract class ChannelMixin {
 
             // Attach the filter to the source.
             AL10.alSourcei(this.source, EXTEfx.AL_DIRECT_FILTER, this.filter);
+            // Remember the pairing so the Sound Physics Remastered compat
+            // mixin can re-attach the filter after SPR rewrites the source.
+            VhsFilterManager.register(this.source, this.filter);
         } catch (Exception e) {
             // If EFX isn't supported or fails, we just don't get the effect.
             this.filter = -1;
@@ -65,9 +69,10 @@ public abstract class ChannelMixin {
      */
     @Inject(method = "play", at = @At("HEAD"))
     private void noname$applyVhsPitchWarble(CallbackInfo ci) {
-        if (this.filter != -1) {
-            AL10.alSourcei(this.source, EXTEfx.AL_DIRECT_FILTER, this.filter);
-        }
+        // Re-attach the low-pass (the single AL_DIRECT_FILTER slot per source
+        // is a shared resource: vanilla resets it and Sound Physics Remastered
+        // overwrites it with its own occlusion filter).
+        VhsFilterManager.apply(this.source);
 
         // Slight speed/pitch instability (tape warble).
         // +/- 1.5% pitch variation.
@@ -81,6 +86,7 @@ public abstract class ChannelMixin {
      */
     @Inject(method = "destroy", at = @At("HEAD"))
     private void noname$cleanupVhsFilter(CallbackInfo ci) {
+        VhsFilterManager.unregister(this.source);
         if (this.filter != -1) {
             EXTEfx.alDeleteFilters(this.filter);
             this.filter = -1;
