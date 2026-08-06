@@ -1,6 +1,7 @@
 package dev.noname.client;
 
 import dev.noname.DayCounter;
+import dev.noname.config.ModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -61,7 +62,8 @@ public final class CreepyBassStingerHandler {
         }
 
         // Day 4+ only — gate on the same counter everything else uses.
-        if (DayCounter.currentDay(level) < 4) {
+        if (DayCounter.currentDay(level) < ModConfig.scaledDay(4)
+                || !ModConfig.isEnabled("creepy_bass")) {
             ticksUntilNextAttempt = MIN_WAIT_TICKS;
             return;
         }
@@ -75,7 +77,7 @@ public final class CreepyBassStingerHandler {
                 + level.getRandom().nextInt(MAX_WAIT_TICKS - MIN_WAIT_TICKS + 1);
         ticksUntilNextAttempt = wait;
 
-        if (level.getRandom().nextFloat() >= STING_CHANCE) {
+        if (level.getRandom().nextFloat() >= ModConfig.chance("creepy_bass", STING_CHANCE)) {
             return;
         }
         triggerStinger(mc);

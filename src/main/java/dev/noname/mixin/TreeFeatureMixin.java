@@ -39,7 +39,8 @@ public abstract class TreeFeatureMixin {
             return;
         }
         WorldGenLevel level = context.level();
-        if (dev.noname.DayCounter.currentDay(level) < 4) {
+        if (dev.noname.DayCounter.currentDay(level) < dev.noname.config.ModConfig.scaledDay(4)
+                || !dev.noname.config.ModConfig.isEnabled("leafless_trees")) {
             return;
         }
         RandomSource random = context.random();

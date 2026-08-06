@@ -2,6 +2,7 @@ package dev.noname.mixin;
 
 import dev.noname.BloodMobHandler;
 import dev.noname.DayCounter;
+import dev.noname.config.ModConfig;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -39,10 +40,12 @@ public abstract class NamedMobMixin {
             return;
         }
         ServerLevel level = (ServerLevel) (Object) this;
-        if (DayCounter.currentDay(level) < 7) {
+        if (DayCounter.currentDay(level) < ModConfig.scaledDay(7)
+                || !ModConfig.isEnabled("blood_death")) {
             return;
         }
-        if (level.random.nextFloat() >= BloodMobHandler.NAMED_MOB_CHANCE) {
+        if (level.random.nextFloat()
+                >= ModConfig.chance("blood_death", BloodMobHandler.NAMED_MOB_CHANCE)) {
             return;
         }
         mob.setCustomName(Component.literal(BloodMobHandler.NAMED_MOB_NAME));

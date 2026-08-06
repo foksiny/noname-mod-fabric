@@ -62,13 +62,18 @@ public final class NonameCommand {
             "named_mob",         // spawn one named animal in front of each player
             "sign_place",        // place one creepy sign near each player
             "door_creak",        // toggle the closest door near each player
+            "door_knock",        // play a knock at a player-placed door near each player
             "day3_timeskip",     // day-3 midday -> sudden jump to night (19:00)
             "day2_null_join",    // day-2 midday -> "null" joins, sorry chat, then leaves
             "day6_static",       // day-6 midday -> static overlay + text sequence
             "day10_look",        // day-10+ lag event: look behind + fake player
+            "day10_whisper",     // client: ghost's texts whispered on screen (day 10+)
             "day11_chest",       // day-11+ mystery chest above an oak plank
             "day5_pig",          // spawn an infected pig in front of each player
             "he_is_here",        // "." secret event: the friend runs at you
+            "ise_it",            // day-6+: glitchy "ise it" apparition 15 blocks away
+            "cave_zombie",       // day-8+: smart named zombie spawns 10 blocks away in caves
+            "cave_digging",      // caves: someone digs stone toward the player (10-20 s, 40% per 1.5-3 min)
     };
 
     private static final int BAR_LENGTH = 20;
@@ -192,9 +197,15 @@ public final class NonameCommand {
         addGate(sb, day, 8, Long.MAX_VALUE, "red sky: heavy fog + VHS (15% per 1-3 min, client)", "day 8+");
         addGate(sb, day, 9, Long.MAX_VALUE, "creepy signs (15% per 2-4 min)", "day 9+");
         addGate(sb, day, 4, Long.MAX_VALUE, "doors creak (20%/2-4m, 45% rapid spam)", "day 4+");
+        addGate(sb, day, 3, Long.MAX_VALUE, "door knocks (30%/2-4m, player-placed only)", "day 3+");
+        addGate(sb, day, 0, Long.MAX_VALUE, "horses die near players (5 blocks)", "always");
         addGate(sb, day, 10, Long.MAX_VALUE, "red rain (always)", "day 10+");
         addGate(sb, day, 10, Long.MAX_VALUE, "lag event: look behind, fake player (30% per 3-6 min)", "day 10+");
+        addGate(sb, day, 10, Long.MAX_VALUE, "screen whispers (15% per 4-8 min, client)", "day 10+");
         addGate(sb, day, 11, Long.MAX_VALUE, "mystery chests (5% per 2-4 min)", "day 11+");
+        addGate(sb, day, 8, Long.MAX_VALUE, "meat drops (5% per kill)", "day 8+");
+        addGate(sb, day, 8, Long.MAX_VALUE, "cave stalker zombie (35% per 1-1.5 min in caves)", "day 8+");
+        addGate(sb, day, 4, Long.MAX_VALUE, "craft infinite knife (meat + knife)", "day 4+");
 
         src.sendSuccess(() -> Component.literal(sb.toString()), false);
         return 1;

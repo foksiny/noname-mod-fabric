@@ -1,5 +1,6 @@
 package dev.noname.client;
 
+import dev.noname.config.ModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -37,7 +38,8 @@ public final class CaveSoundHandler {
         }
         ticksUntilNextCheck = CHECK_INTERVAL_TICKS;
 
-        if (mc.level.random.nextFloat() < PLAY_CHANCE) {
+        if (ModConfig.isEnabled("cave_sounds")
+                && mc.level.random.nextFloat() < ModConfig.chance("cave_sounds", PLAY_CHANCE)) {
             float pitch = mc.level.random.nextFloat() * 0.7F + 0.7F;
             // Bound to the player entity itself so the cave sound follows
             // them and can never be walked away from.

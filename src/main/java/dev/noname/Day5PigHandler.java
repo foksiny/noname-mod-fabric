@@ -1,6 +1,7 @@
 package dev.noname;
 
 import com.mojang.authlib.GameProfile;
+import dev.noname.config.ModConfig;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
@@ -71,9 +72,10 @@ public final class Day5PigHandler {
     }
 
     public static void onServerTick(MinecraftServer server) {
+        if (!ModConfig.isEnabled("day5_pig")) return;
         ServerLevel overworld = server.overworld();
         if (overworld == null) return;
-        if (DayCounter.currentDay(overworld) < 5) return;
+        if (DayCounter.currentDay(overworld) < ModConfig.scaledDay(5)) return;
 
         particleTickCounter++;
         boolean emitParticles = particleTickCounter % BLOOD_PARTICLE_INTERVAL == 0;
@@ -119,6 +121,7 @@ public final class Day5PigHandler {
      */
     public static void onDeath(net.minecraft.world.entity.LivingEntity entity,
                                net.minecraft.world.damagesource.DamageSource source) {
+        if (!ModConfig.isEnabled("day5_pig")) return;
         if (!(entity instanceof Pig pig)) return;
         if (!isInfected(pig)) return;
         ServerLevel level = (ServerLevel) pig.level();
@@ -153,7 +156,7 @@ public final class Day5PigHandler {
                 new ItemStack(ModBlocks.FLESH_BLOCK, count)));
 
         // 25% chance to spawn the fake player.
-        if (level.random.nextFloat() >= FAKE_PLAYER_CHANCE) return;
+        if (level.random.nextFloat() >= ModConfig.chance("day5_pig", FAKE_PLAYER_CHANCE)) return;
         if (killer == null) return;
 
         spawnFakePlayerApparition(level, pig, killer, level.getServer());

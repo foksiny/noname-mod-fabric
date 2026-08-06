@@ -1,5 +1,6 @@
 package dev.noname.client;
 
+import dev.noname.config.ModConfig;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.EXTEfx;
 
@@ -49,8 +50,16 @@ public final class VhsFilterManager {
      * Re-attaches the VHS filter to the given OpenAL source. No-op for sources
      * that don't have one (e.g. voice-chat sources that never went through a
      * vanilla audio channel).
+     *
+     * <p>When the VHS effect is disabled, the filter slot is cleared instead:
+     * vanilla reuses channels, so an old filtered channel would otherwise keep
+     * muffling new sounds.
      */
     public static void apply(int source) {
+        if (!ModConfig.isEnabled("vhs_effect")) {
+            AL10.alSourcei(source, EXTEfx.AL_DIRECT_FILTER, 0);
+            return;
+        }
         Integer filter = FILTER_BY_SOURCE.get(source);
         if (filter != null) {
             AL10.alSourcei(source, EXTEfx.AL_DIRECT_FILTER, filter);

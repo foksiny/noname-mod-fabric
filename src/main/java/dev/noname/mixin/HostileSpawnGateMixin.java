@@ -1,6 +1,7 @@
 package dev.noname.mixin;
 
 import dev.noname.DayCounter;
+import dev.noname.config.ModConfig;
 import dev.noname.HostileSpawnTracker;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -39,11 +40,15 @@ public abstract class HostileSpawnGateMixin {
             return;
         }
         // The first day stays normal; from day 1 on, no hostile spawns.
-        if (DayCounter.currentDay((LevelAccessor) this) < 1) {
+        if (DayCounter.currentDay((LevelAccessor) this) < ModConfig.scaledDay(1)) {
             return;
         }
         // Deliberate spawns (spawn egg, /summon) still work.
         if (HostileSpawnTracker.isDeliberateSpawn(mob)) {
+            return;
+        }
+        // Toggleable in the config: disabling "hostile_stop" restores mobs.
+        if (!ModConfig.isEnabled("hostile_stop")) {
             return;
         }
         cir.setReturnValue(false);

@@ -4,6 +4,7 @@ uniform sampler2D DiffuseSampler;
 
 uniform float Time;
 uniform vec2  OutSize;
+uniform float Darkness;
 
 in vec2 texCoord;
 
@@ -69,6 +70,9 @@ void main() {
     // ---- vignette + brightness flicker --------------------------------------
     col *= mix(0.42, 1.0, smoothstep(1.42, 0.25, dist));
     col *= 0.93 + 0.07 * hash(vec2(tapeFrame, 7.0));
+
+    // ---- environmental darkness (night / caves / dark places) ----------------
+    col *= Darkness;
 
     fragColor = vec4(col, 1.0);
 }

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "combat",
+  "ingredients": [
+    {
+      "item": "noname:meat"
+    },
+    {
+      "item": "noname:knife"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "noname:infinite_knife"
+  }
+}

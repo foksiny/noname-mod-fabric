@@ -1,5 +1,6 @@
 package dev.noname;
 
+import dev.noname.config.ModConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -68,6 +69,9 @@ public final class NamedMobBehaviourHandler {
      * {@code ServerTickEvents.START_SERVER_TICK}.
      */
     public static void onServerTick(MinecraftServer server) {
+        if (!ModConfig.isEnabled("blood_death") && !ModConfig.isEnabled("named_mob")) {
+            return;
+        }
         for (ServerLevel level : server.getAllLevels()) {
             for (Entity entity : level.getAllEntities()) {
                 if (!(entity instanceof Mob mob) || mob.isRemoved()) {

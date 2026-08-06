@@ -1,6 +1,7 @@
 package dev.noname.client;
 
 import dev.noname.DayCounter;
+import dev.noname.config.ModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -68,6 +69,10 @@ public final class Day2CreepHandler {
             ticksInDay2 = 0;          // restart counting if we leave day 2
             return;
         }
+        if (!ModConfig.isEnabled("day2_message")) {
+            ticksInDay2 = 0;
+            return;
+        }
         ticksInDay2++;
 
         // 1) After 3 minutes in day 2, show the message for 10 seconds.
@@ -76,7 +81,9 @@ public final class Day2CreepHandler {
             messageUpFromTick = sessionTick;
             messageUpUntil = sessionTick + MESSAGE_DURATION_TICKS;
             // Schedule the disc 10 s later than the message appears.
-            discStartAtTick = sessionTick + DISC_DELAY_TICKS;
+            if (ModConfig.isEnabled("disc_11")) {
+                discStartAtTick = sessionTick + DISC_DELAY_TICKS;
+            }
         }
 
         if (messageUpFromTick >= 0 && sessionTick >= messageUpUntil) {
@@ -93,7 +100,7 @@ public final class Day2CreepHandler {
 
     /** {@return whether the {@link ClientLevel} is currently on day 2}. */
     private static boolean isDay2(ClientLevel level) {
-        return DayCounter.currentDay(level) == 2;
+        return DayCounter.currentDay(level) == ModConfig.scaledDay(2);
     }
 
     private static void playDisc11(Minecraft mc) {

@@ -2,6 +2,7 @@ package dev.noname.mixin;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.noname.DayCounter;
+import dev.noname.config.ModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,7 +26,8 @@ public abstract class RedRainMixin {
             at = @At(value = "INVOKE",
                     target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;setColor(FFFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"))
     private void noname$makeRainRed(Args args) {
-        if (DayCounter.currentDay(this.minecraft.level) < 10) {
+        if (DayCounter.currentDay(this.minecraft.level) < ModConfig.scaledDay(10)
+                || !ModConfig.isEnabled("red_rain")) {
             return;
         }
         args.set(0, 1.0F);

@@ -2,6 +2,7 @@ package dev.noname.client;
 
 import dev.noname.DayCounter;
 import dev.noname.ModSounds;
+import dev.noname.config.ModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.sounds.SoundSource;
@@ -119,7 +120,8 @@ public final class Day8SkyHandler {
 
         // Day 8+ only; before that keep the countdown fresh so the first
         // attempt is exactly 1-3 minutes into day 8.
-        if (DayCounter.currentDay(level) < 8) {
+        if (DayCounter.currentDay(level) < ModConfig.scaledDay(8)
+                || !ModConfig.isEnabled("day8_sky")) {
             ticksUntilNextRoll = MIN_ROLL_TICKS;
             return;
         }
@@ -130,7 +132,7 @@ public final class Day8SkyHandler {
         ticksUntilNextRoll = MIN_ROLL_TICKS
                 + level.getRandom().nextInt(MAX_ROLL_TICKS - MIN_ROLL_TICKS + 1);
 
-        if (level.getRandom().nextFloat() >= EVENT_CHANCE) {
+        if (level.getRandom().nextFloat() >= ModConfig.chance("day8_sky", EVENT_CHANCE)) {
             return;
         }
         startEvent(mc);

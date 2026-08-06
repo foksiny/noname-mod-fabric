@@ -1,5 +1,6 @@
 package dev.noname;
 
+import dev.noname.config.ModConfig;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 
@@ -45,7 +46,7 @@ public final class Day3TimeSkipHandler {
     }
 
     public static void onServerTick(MinecraftServer server) {
-        if (done) {
+        if (done || !ModConfig.isEnabled("day3_timeskip")) {
             return;
         }
         ServerLevel overworld = server.overworld();
@@ -54,7 +55,7 @@ public final class Day3TimeSkipHandler {
         }
 
         long day = DayCounter.currentDay(overworld);
-        if (day != 3) {
+        if (day != ModConfig.scaledDay(3)) {
             // Reset the observer whenever we are not on day 3 so the first
             // day-3 tick of a later session records the time before testing
             // the threshold.

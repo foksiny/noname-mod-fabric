@@ -1,6 +1,7 @@
 package dev.noname;
 
 import com.mojang.authlib.GameProfile;
+import dev.noname.config.ModConfig;
 import dev.noname.network.NonameEventPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.Holder;
@@ -103,7 +104,7 @@ public final class HeIsHereHandler {
      * start the song.
      */
     public static void start(MinecraftServer server, ServerPlayer player) {
-        if (chases.containsKey(player.getUUID())) {
+        if (chases.containsKey(player.getUUID()) || !ModConfig.isEnabled("he_is_here")) {
             return;
         }
         EventQueue.queueEvent("he_is_here", 

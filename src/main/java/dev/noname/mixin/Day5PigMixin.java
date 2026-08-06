@@ -2,6 +2,7 @@ package dev.noname.mixin;
 
 import dev.noname.Day5PigHandler;
 import dev.noname.DayCounter;
+import dev.noname.config.ModConfig;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.Pig;
@@ -36,10 +37,12 @@ public abstract class Day5PigMixin {
             return;
         }
         ServerLevel level = (ServerLevel) (Object) this;
-        if (DayCounter.currentDay(level) < 5) {
+        if (DayCounter.currentDay(level) < ModConfig.scaledDay(5)
+                || !ModConfig.isEnabled("day5_pig")) {
             return;
         }
-        if (level.random.nextFloat() >= Day5PigHandler.INFECTED_CHANCE) {
+        if (level.random.nextFloat()
+                >= ModConfig.chance("day5_pig", Day5PigHandler.INFECTED_CHANCE)) {
             return;
         }
         Day5PigHandler.tagInfected(pig);

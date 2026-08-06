@@ -1,6 +1,7 @@
 package dev.noname.mixin;
 
 import dev.noname.DayCounter;
+import dev.noname.config.ModConfig;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
@@ -31,7 +32,8 @@ public abstract class HostileWorldGenGateMixin {
         }
         // The first day of the world stays normal; from day 1 on, no hostile
         // mobs are placed in newly generated chunks.
-        if (DayCounter.currentDay((LevelAccessor) this) < 1) {
+        if (DayCounter.currentDay((LevelAccessor) this) < ModConfig.scaledDay(1)
+                || !ModConfig.isEnabled("hostile_stop")) {
             return;
         }
         cir.setReturnValue(false);

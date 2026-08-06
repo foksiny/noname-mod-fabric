@@ -107,6 +107,21 @@ public final class ModSounds {
      */
     public static final SoundEvent DAY6_LAUGHS = createSoundEvent("day6_laughs");
 
+    /**
+     * "Do you see me" — the 2-second voice clip (the user's
+     * {@code do-you-see-me.mp3}) that plays at the apparition's position the
+     * moment "ise it" appears on day 6+.
+     */
+    public static final SoundEvent DO_YOU_SEE_ME = createSoundEvent("do_you_see_me");
+
+    /**
+     * "Door knocking" — the user's nine {@code door_knock_sfx} knock clips,
+     * converted to Ogg Vorbis. From day 3 on, occasionally one of them plays
+     * at a player-placed door within 10 blocks of the player; Minecraft picks
+     * a random file from the {@code sounds.json} entry each time.
+     */
+    public static final SoundEvent DOOR_KNOCK = createSoundEvent("door_knock");
+
     private ModSounds() {
     }
 
@@ -126,6 +141,8 @@ public final class ModSounds {
         registerSoundEvent(DAY6_BLIP);
         registerSoundEvent(TAPE_MOTOR);
         registerSoundEvent(DAY6_LAUGHS);
+        registerSoundEvent(DO_YOU_SEE_ME);
+        registerSoundEvent(DOOR_KNOCK);
     }
 
     private static SoundEvent createSoundEvent(String name) {

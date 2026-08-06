@@ -8,6 +8,7 @@ import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.util.ReferenceCountUtil;
+import dev.noname.config.ModConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.Connection;
 import net.minecraft.network.UnconfiguredPipelineHandler;
@@ -73,7 +74,8 @@ public final class FakePlayerHandler {
         }
 
         // The ghost joins once day 3 arrives (and only once per server session).
-        if (DayCounter.currentDay(overworld) >= 3
+        if (DayCounter.currentDay(overworld) >= ModConfig.scaledDay(3)
+                && ModConfig.isEnabled("ghost_join")
                 && server.getPlayerList().getPlayer(FakePlayerUtil.FAKE_UUID) == null) {
             spawnGhost(server, overworld);
         }
@@ -178,7 +180,7 @@ public final class FakePlayerHandler {
      * reaches the players.
      */
     private static void tickGhostLines(MinecraftServer server) {
-        if (ticksUntilGhostLine < 0) {
+        if (ticksUntilGhostLine < 0 || !ModConfig.isEnabled("ghost_chat")) {
             return;
         }
         if (--ticksUntilGhostLine > 0) {
@@ -200,7 +202,7 @@ public final class FakePlayerHandler {
      * (played at their own position, so it reads as ambient to each of them).
      */
     private static void tickItHurts(MinecraftServer server) {
-        if (ticksUntilItHurts < 0) {
+        if (ticksUntilItHurts < 0 || !ModConfig.isEnabled("it_hurts_to_see")) {
             return;
         }
         if (--ticksUntilItHurts > 0) {

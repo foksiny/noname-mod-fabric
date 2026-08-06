@@ -2,6 +2,7 @@ package dev.noname.client;
 
 import dev.noname.DayCounter;
 import dev.noname.ModSounds;
+import dev.noname.config.ModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.sounds.SoundSource;
@@ -54,7 +55,8 @@ public final class Day5FlashHandler {
 
         // Day 5+ only; before that (or while out of the world) keep the
         // countdown fresh so the first attempt is exactly 1 minute into day 5.
-        if (DayCounter.currentDay(level) < 5) {
+        if (DayCounter.currentDay(level) < ModConfig.scaledDay(5)
+                || !ModConfig.isEnabled("day5_flash")) {
             ticksUntilNextAttempt = FLASH_INTERVAL_TICKS;
             return;
         }
@@ -64,7 +66,7 @@ public final class Day5FlashHandler {
         }
         ticksUntilNextAttempt = FLASH_INTERVAL_TICKS;
 
-        if (level.getRandom().nextFloat() >= FLASH_CHANCE) {
+        if (level.getRandom().nextFloat() >= ModConfig.chance("day5_flash", FLASH_CHANCE)) {
             return;
         }
         startFlash(mc);

@@ -1,5 +1,6 @@
 package dev.noname;
 
+import dev.noname.config.ModConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -67,7 +68,8 @@ public final class DoorHandler {
         }
 
         ServerLevel overworld = server.overworld();
-        if (overworld == null || DayCounter.currentDay(overworld) < 4) {
+        if (overworld == null || DayCounter.currentDay(overworld) < ModConfig.scaledDay(4)
+                || !ModConfig.isEnabled("door_creak")) {
             ticksUntilNextRoll = MIN_INTERVAL_TICKS;
             return;
         }
@@ -76,7 +78,7 @@ public final class DoorHandler {
         }
         ticksUntilNextRoll = MIN_INTERVAL_TICKS
                 + overworld.getRandom().nextInt(MAX_INTERVAL_TICKS - MIN_INTERVAL_TICKS + 1);
-        if (overworld.getRandom().nextFloat() >= TOGGLE_CHANCE) {
+        if (overworld.getRandom().nextFloat() >= ModConfig.chance("door_creak", TOGGLE_CHANCE)) {
             return;
         }
         triggerDoorEvent(server);

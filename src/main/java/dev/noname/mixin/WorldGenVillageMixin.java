@@ -1,6 +1,7 @@
 package dev.noname.mixin;
 
 import dev.noname.DayCounter;
+import dev.noname.config.ModConfig;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.npc.Villager;
@@ -26,7 +27,8 @@ public abstract class WorldGenVillageMixin {
             return;
         }
 
-        if (DayCounter.currentDay((LevelAccessor) this) < 1) {
+        if (DayCounter.currentDay((LevelAccessor) this) < ModConfig.scaledDay(1)
+                || !ModConfig.isEnabled("village_removal")) {
             return;
         }
 

@@ -19,12 +19,18 @@
     "RedRainMixin",
     "PigRendererTintMixin",
     "GameRendererAccessor",
+    "ScreenAccessor",
     "VhsGlassesMixin",
     "ChannelMixin",
     "SoundPhysicsCompatMixin",
     "BedNameMixin",
     "AbstractButtonAccessor",
-    "MenuButtonGlitchMixin"
+    "MenuButtonGlitchMixin",
+    "MoonInfectionMixin",
+    "NoStarsMixin",
+    "ScrambledItemNameMixin",
+    "ItemRendererMixin",
+    "OptionsScreenNonameButtonMixin"
   ],
   "mixins": [
     "ConnectionAccessor",
@@ -37,6 +43,7 @@
     "HostileSpawnGateMixin",
     "HostileWorldGenGateMixin",
     "NamedMobMixin",
+    "PlayerBlockPlaceMixin",
     "Day5PigMixin",
     "PigInfectionMixin",
     "TreeFeatureMixin",
@@ -54,12 +61,14 @@
     "RecentMobGateMixin",
     "RecentMobWorldGenGateMixin",
     "NoCopperOreMixin",
+    "NoNaturalGrassMixin",
     "FasterDayCycleMixin",
     "OverworldBiomeGateMixin",
     "OverworldBiomeBuilderAccessor",
     "RecipeManagerMixin",
     "WolfVariantsMixin",
-    "AxeItemMixin"
+    "AxeItemMixin",
+    "NoBeeNestMixin"
   ],
   "injectors": {
     "defaultRequire": 1

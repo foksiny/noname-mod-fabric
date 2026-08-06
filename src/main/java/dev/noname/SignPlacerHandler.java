@@ -1,5 +1,6 @@
 package dev.noname;
 
+import dev.noname.config.ModConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -76,7 +77,8 @@ public final class SignPlacerHandler {
      *  {@code ServerTickEvents.START_SERVER_TICK}. */
     public static void onServerTick(MinecraftServer server) {
         ServerLevel overworld = server.overworld();
-        if (DayCounter.currentDay(overworld) < 9) {
+        if (DayCounter.currentDay(overworld) < ModConfig.scaledDay(9)
+                || !ModConfig.isEnabled("sign_place")) {
             ticksUntilNextRoll = MIN_INTERVAL_TICKS;
             return;
         }
@@ -85,7 +87,7 @@ public final class SignPlacerHandler {
         }
         ticksUntilNextRoll = MIN_INTERVAL_TICKS
                 + overworld.getRandom().nextInt(MAX_INTERVAL_TICKS - MIN_INTERVAL_TICKS + 1);
-        if (overworld.getRandom().nextFloat() >= PLACE_CHANCE) {
+        if (overworld.getRandom().nextFloat() >= ModConfig.chance("sign_place", PLACE_CHANCE)) {
             return;
         }
         placeOneNearEachPlayer(server);

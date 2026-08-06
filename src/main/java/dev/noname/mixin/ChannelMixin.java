@@ -2,6 +2,7 @@ package dev.noname.mixin;
 
 import com.mojang.blaze3d.audio.Channel;
 import dev.noname.client.VhsFilterManager;
+import dev.noname.config.ModConfig;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.EXTEfx;
 import org.spongepowered.asm.mixin.Final;
@@ -42,6 +43,10 @@ public abstract class ChannelMixin {
      */
     @Inject(method = "<init>", at = @At("TAIL"))
     private void noname$initVhsFilter(int source, CallbackInfo ci) {
+        if (!ModConfig.isEnabled("vhs_effect")) {
+            this.filter = -1;
+            return;
+        }
         try {
             this.filter = EXTEfx.alGenFilters();
             EXTEfx.alFilteri(this.filter, EXTEfx.AL_FILTER_TYPE, EXTEfx.AL_FILTER_LOWPASS);
@@ -71,8 +76,14 @@ public abstract class ChannelMixin {
     private void noname$applyVhsPitchWarble(CallbackInfo ci) {
         // Re-attach the low-pass (the single AL_DIRECT_FILTER slot per source
         // is a shared resource: vanilla resets it and Sound Physics Remastered
-        // overwrites it with its own occlusion filter).
+        // overwrites it with its own occlusion filter). When the VHS effect
+        // is disabled this clears the slot instead, so reused channels stop
+        // being muffled.
         VhsFilterManager.apply(this.source);
+
+        if (!ModConfig.isEnabled("vhs_effect")) {
+            return;
+        }
 
         // Slight speed/pitch instability (tape warble).
         // +/- 1.5% pitch variation.

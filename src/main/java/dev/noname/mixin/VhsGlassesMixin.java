@@ -1,9 +1,16 @@
 package dev.noname.mixin;
 
+import dev.noname.config.ModConfig;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.PostChain;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.LightLayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -48,29 +55,71 @@ public abstract class VhsGlassesMixin {
     @Unique
     private static boolean effectFailedOnce;
 
+    /** True while the chain currently installed is ours (set right after the
+     *  effect is loaded, so disabling the toggle only tears down our own
+     *  effect, never a vanilla entity filter such as the creeper screen). */
+    @Unique
+    private static boolean effectInstalled;
+
     /**
      * Every frame, make sure our post-process chain is installed. Loading is
      * one-time per chain; the guard intentionally does nothing while a world
      * is not present (menus stay clean) or while one of vanilla's own entity
      * screen filters is active (spider / creeper / enderman vibes win).
+     *
+     * <p>The "VHS screen filter" toggle is honored here: when switched off,
+     * the effect is shut down on the spot; when switched back on, the next
+     * frame reinstalls it.
      */
     @Inject(method = "render(Lnet/minecraft/client/DeltaTracker;Z)V", at = @At("HEAD"))
     private void noname$keepVhsGlassesOn(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {
         if (effectFailedOnce) {
             return;
         }
-        if (Minecraft.getInstance().level == null) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null || mc.player == null) {
             return;
         }
         GameRenderer renderer = (GameRenderer) (Object) this;
-        if (renderer.currentEffect() != null) {
+        if (!ModConfig.isEnabled("vhs_effect")) {
+            if (effectInstalled && renderer.currentEffect() != null) {
+                ((GameRendererAccessor) renderer).noname$shutdownEffect();
+            }
+            effectInstalled = false;
             return;
         }
-        ((GameRendererAccessor) renderer).noname$loadEffect(VHS_GLASSES_EFFECT);
         if (renderer.currentEffect() == null) {
-            // Never retry: if the shader chain failed to build (missing assets,
-            // compile error) we don't want a warning logged every single frame.
-            effectFailedOnce = true;
+            ((GameRendererAccessor) renderer).noname$loadEffect(VHS_GLASSES_EFFECT);
+            if (renderer.currentEffect() == null) {
+                // Never retry: if the shader chain failed to build (missing assets,
+                // compile error) we don't want a warning logged every single frame.
+                effectFailedOnce = true;
+                return;
+            }
+            effectInstalled = true;
         }
+
+        PostChain effect = renderer.currentEffect();
+        if (effect != null) {
+            float darknessMultiplier = noname$calculateDarkness(mc.level, mc.player, deltaTracker.getGameTimeDeltaPartialTick(true));
+            effect.setUniform("Darkness", darknessMultiplier);
+        }
+    }
+
+    @Unique
+    private float noname$calculateDarkness(ClientLevel level, LocalPlayer player, float partialTick) {
+        float sunAngle = level.getSunAngle(partialTick);
+        float dayFactor = Mth.clamp(Mth.cos(sunAngle), 0.0F, 1.0F);
+
+        BlockPos pos = player.blockPosition();
+        int skyLight = level.getBrightness(LightLayer.SKY, pos);
+        int blockLight = level.getBrightness(LightLayer.BLOCK, pos);
+
+        float skyFactor = skyLight / 15.0F;
+        float blockFactor = (blockLight / 15.0F) * 0.5F;
+        float ambientLight = Math.max(skyFactor * dayFactor, blockFactor);
+
+        // Map ambient light 0.0..1.0 to darkness multiplier 0.2..1.0 (80% darker when ambient is 0)
+        return Mth.lerp(ambientLight, 0.2F, 1.0F);
     }
 }

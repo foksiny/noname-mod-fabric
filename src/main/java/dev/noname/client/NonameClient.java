@@ -1,6 +1,7 @@
 package dev.noname.client;
 
 import dev.noname.ModParticles;
+import dev.noname.config.ModConfig;
 import dev.noname.network.ModPayloads;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -25,6 +26,7 @@ public final class NonameClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        ModConfig.load();
         ClientTickEvents.START_CLIENT_TICK.register(CaveSoundHandler::onClientTick);
         ClientTickEvents.START_CLIENT_TICK.register(Day2CreepHandler::onClientTick);
         ClientTickEvents.START_CLIENT_TICK.register(Day5FlashHandler::onClientTick);
@@ -33,6 +35,9 @@ public final class NonameClient implements ClientModInitializer {
         ClientTickEvents.START_CLIENT_TICK.register(Day8SkyHandler::onClientTick);
         ClientTickEvents.START_CLIENT_TICK.register(HeIsHereClient::onClientTick);
         ClientTickEvents.START_CLIENT_TICK.register(TapeMotorHandler::onClientTick);
+        ClientTickEvents.START_CLIENT_TICK.register(ScrambledItemNameHandler::onClientTick);
+        ClientTickEvents.START_CLIENT_TICK.register(ShaderDetectionHandler::onClientTick);
+        ClientTickEvents.START_CLIENT_TICK.register(Day10WhisperHandler::onClientTick);
 
         HudRenderCallback.EVENT.register(Day2CreepOverlay::onHudRender);
         HudRenderCallback.EVENT.register(Day5FlashOverlay::onHudRender);
@@ -42,11 +47,21 @@ public final class NonameClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register(HeIsHereOverlay::onHudRender);
         HudRenderCallback.EVENT.register(VersionOverlay::onHudRender);
         HudRenderCallback.EVENT.register(DayCounterOverlay::onHudRender);
+        HudRenderCallback.EVENT.register(Day10WhisperOverlay::onHudRender);
         ScreenEvents.AFTER_INIT.register(ButtonRestrictionsHandler::onScreenInit);
 
         // Blood drops from dying named mobs.
         ParticleFactoryRegistry.getInstance()
                 .register(ModParticles.BLOOD_DROP, BloodDropParticle.Provider::new);
+
+        // The "ise it" apparition: a flat billboard entity.
+        net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry.register(
+                dev.noname.ModEntities.ISE_IT, IseItRenderer::new);
+
+        // The cave stalker: a vanilla-style zombie renderer.
+        net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry.register(
+                dev.noname.ModEntities.CAVE_ZOMBIE,
+                ctx -> new net.minecraft.client.renderer.entity.ZombieRenderer(ctx));
 
         // Stitch alpha chest textures into vanilla atlas format
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES)

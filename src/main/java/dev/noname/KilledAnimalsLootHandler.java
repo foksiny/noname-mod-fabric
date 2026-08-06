@@ -1,5 +1,6 @@
 package dev.noname;
 
+import dev.noname.config.ModConfig;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -77,7 +78,8 @@ public final class KilledAnimalsLootHandler {
         }
 
         // Only arm the loop from day 4 on; before that, nothing happens.
-        if (DayCounter.currentDay(overworld) < 4) {
+        if (DayCounter.currentDay(overworld) < ModConfig.scaledDay(4)
+                || !ModConfig.isEnabled("loot_pile")) {
             ticksUntilNextPile = -1;
             return;
         }
@@ -129,7 +131,9 @@ public final class KilledAnimalsLootHandler {
         if (server == null) return false;
         ServerLevel overworld = server.overworld();
         if (overworld == null) return false;
-        return DayCounter.currentDay(overworld) >= 4 && !server.getPlayerList().getPlayers().isEmpty();
+        return ModConfig.isEnabled("loot_pile")
+                && DayCounter.currentDay(overworld) >= ModConfig.scaledDay(4)
+                && !server.getPlayerList().getPlayers().isEmpty();
     }
 
     private static void scatterPileNear(ServerPlayer player) {

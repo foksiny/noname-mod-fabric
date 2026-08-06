@@ -1,5 +1,6 @@
 package dev.noname;
 
+import dev.noname.config.ModConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
@@ -45,7 +46,8 @@ public final class PillarHandler {
      * look).
      */
     public static void maybePlacePillar(WorldGenLevel level, ChunkAccess chunk) {
-        if (DayCounter.currentDay(level) < 6) {
+        if (DayCounter.currentDay(level) < ModConfig.scaledDay(6)
+                || !ModConfig.isEnabled("pillar")) {
             return;
         }
         if (!Level.OVERWORLD.equals(level.getLevel().dimension())) {
@@ -57,7 +59,7 @@ public final class PillarHandler {
         var pos = chunk.getPos();
         RandomSource rng = RandomSource.create(
                 level.getSeed() ^ ((long) pos.x * 0x9E3779B1L) ^ ((long) pos.z * 0x85EBCA6BL));
-        if (rng.nextFloat() >= PILLAR_CHANCE) {
+        if (rng.nextFloat() >= ModConfig.chance("pillar", PILLAR_CHANCE)) {
             return;
         }
 

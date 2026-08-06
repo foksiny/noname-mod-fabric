@@ -1,5 +1,6 @@
 package dev.noname;
 
+import dev.noname.config.ModConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
@@ -62,7 +63,8 @@ public final class FleshTreeHandler {
      * inside the chunk. Gated on day 8+ and the overworld.
      */
     public static void maybeGrowFleshTree(WorldGenLevel level, ChunkAccess chunk) {
-        if (DayCounter.currentDay(level) < 8) {
+        if (DayCounter.currentDay(level) < ModConfig.scaledDay(8)
+                || !ModConfig.isEnabled("flesh_tree")) {
             return;
         }
         if (!Level.OVERWORLD.equals(level.getLevel().dimension())) {
@@ -74,7 +76,7 @@ public final class FleshTreeHandler {
         var pos = chunk.getPos();
         RandomSource rng = RandomSource.create(
                 level.getSeed() ^ ((long) pos.x * 0x9E3779B1L) ^ ((long) pos.z * 0x85EBCA6BL));
-        if (rng.nextFloat() >= TREE_CHANCE) {
+        if (rng.nextFloat() >= ModConfig.chance("flesh_tree", TREE_CHANCE)) {
             return;
         }
 

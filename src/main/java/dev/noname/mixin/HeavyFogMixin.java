@@ -50,10 +50,15 @@ public abstract class HeavyFogMixin {
      *  render distance: half-way out, everything further is soup. */
     private static final float FOG_END_RATIO = 0.5F;
 
-    /** Day palette: pure white fog. */
-    private static final float DAY_RED = 1.0F;
-    private static final float DAY_GREEN = 1.0F;
+    /** Day palette: pale sky blue. */
+    private static final float DAY_RED = 0.6F;
+    private static final float DAY_GREEN = 0.8F;
     private static final float DAY_BLUE = 1.0F;
+
+    /** Dusk palette: yellow-orange haze while the sun sits on the horizon. */
+    private static final float DUSK_RED = 1.0F;
+    private static final float DUSK_GREEN = 0.68F;
+    private static final float DUSK_BLUE = 0.3F;
 
     /** Night palette: solid black fog. */
     private static final float NIGHT_RED = 0.0F;
@@ -87,11 +92,20 @@ public abstract class HeavyFogMixin {
         // Day factor from the sun angle: 1 at noon, 0 once the sun is below
         // the horizon. Alpha fog shaded with the time of day, nothing else.
         float sunAngle = level.getSunAngle(partialTick);
-        float day = Mth.clamp(Mth.cos(sunAngle), 0.0F, 1.0F);
+        float c = Mth.cos(sunAngle);
+        float day = Mth.clamp(c, 0.0F, 1.0F);
 
-        float targetR = Mth.lerp(day, NIGHT_RED, DAY_RED);
-        float targetG = Mth.lerp(day, NIGHT_GREEN, DAY_GREEN);
-        float targetB = Mth.lerp(day, NIGHT_BLUE, DAY_BLUE);
+        // Dusk factor: peaks while the sun hugs the horizon, so the fog turns
+        // yellow-orange around sunset before falling back to black at night.
+        float dusk = Mth.clamp(1.0F - Mth.abs(c) * 1.5F, 0.0F, 1.0F);
+
+        float eveningR = Mth.lerp(dusk, NIGHT_RED, DUSK_RED);
+        float eveningG = Mth.lerp(dusk, NIGHT_GREEN, DUSK_GREEN);
+        float eveningB = Mth.lerp(dusk, NIGHT_BLUE, DUSK_BLUE);
+
+        float targetR = Mth.lerp(day, eveningR, DAY_RED);
+        float targetG = Mth.lerp(day, eveningG, DAY_GREEN);
+        float targetB = Mth.lerp(day, eveningB, DAY_BLUE);
 
         fogRed = Mth.lerp(PALETTE_BLEND, fogRed, targetR);
         fogGreen = Mth.lerp(PALETTE_BLEND, fogGreen, targetG);

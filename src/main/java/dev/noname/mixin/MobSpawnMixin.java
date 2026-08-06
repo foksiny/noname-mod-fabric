@@ -1,6 +1,7 @@
 package dev.noname.mixin;
 
 import dev.noname.DayCounter;
+import dev.noname.config.ModConfig;
 import dev.noname.HostileSpawnTracker;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.Mob;
@@ -36,9 +37,13 @@ public abstract class MobSpawnMixin {
         if (self.getType().getCategory() != MobCategory.MONSTER) {
             return;
         }
+        // Nothing to mark when the hostile-mob block is switched off.
+        if (!ModConfig.isEnabled("hostile_stop")) {
+            return;
+        }
         HostileSpawnTracker.markDeliberate(self,
                 spawnType == MobSpawnType.SPAWN_EGG
                         || spawnType == MobSpawnType.COMMAND
-                        || DayCounter.currentDay(level) < 1);
+                        || DayCounter.currentDay(level) < ModConfig.scaledDay(1));
     }
 }

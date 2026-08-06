@@ -2,6 +2,7 @@ package dev.noname.client;
 
 import dev.noname.DayCounter;
 import dev.noname.ModSounds;
+import dev.noname.config.ModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -98,8 +99,9 @@ public final class Day6Handler {
         }
 
         // Only check for trigger on day 6.
-        if (done || DayCounter.currentDay(level) != 6) {
-            if (DayCounter.currentDay(level) != 6) {
+        if (done || DayCounter.currentDay(level) != ModConfig.scaledDay(6)
+                || !ModConfig.isEnabled("day6_static")) {
+            if (DayCounter.currentDay(level) != ModConfig.scaledDay(6)) {
                 lastSeenTickOfDay = Long.MIN_VALUE;
                 done = false;
             }

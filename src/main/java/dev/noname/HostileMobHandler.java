@@ -1,5 +1,6 @@
 package dev.noname;
 
+import dev.noname.config.ModConfig;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,7 +29,8 @@ public final class HostileMobHandler {
         if (overworld == null) {
             return;
         }
-        if (DayCounter.currentDay(overworld) < 8) {
+        if (DayCounter.currentDay(overworld) < ModConfig.scaledDay(8)
+                || !ModConfig.isEnabled("hostile_clear")) {
             return;
         }
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
@@ -59,7 +61,8 @@ public final class HostileMobHandler {
         AABB box = AABB.ofSize(player.position(),
                 VANISH_RADIUS * 2.0D, VANISH_RADIUS * 2.0D, VANISH_RADIUS * 2.0D);
         List<Entity> hostiles = level.getEntities(player, box,
-                e -> e instanceof Monster && !e.isRemoved());
+                e -> e instanceof Monster && !(e instanceof CaveZombie)
+                        && !e.isRemoved());
         for (Entity hostile : hostiles) {
             hostile.discard();
         }

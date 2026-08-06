@@ -26,6 +26,10 @@ public abstract class LightTextureMixin {
     private static void noname$classicLight(DimensionType dimensionType, int lightLevel, CallbackInfoReturnable<Float> cir) {
         float value = cir.getReturnValue();
         float quadratic = value * value;                    // (level/15)^2
+        // Scale down low light levels so lighting in night/dark places/caves feels 80% darker
+        float factor = (float) lightLevel / 15.0F;
+        float darknessScale = Mth.lerp(factor, 0.2F, 1.0F);
+        quadratic *= darknessScale;
         float banded = Mth.floor(quadratic * 16.0F) / 16.0F; // hard light-level steps
         cir.setReturnValue(banded);
     }

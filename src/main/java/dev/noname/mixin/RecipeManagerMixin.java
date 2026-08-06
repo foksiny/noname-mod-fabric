@@ -2,6 +2,7 @@ package dev.noname.mixin;
 
 import com.google.gson.JsonElement;
 import dev.noname.RecentRecipeTracker;
+import dev.noname.config.ModConfig;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -27,5 +28,11 @@ public abstract class RecipeManagerMixin {
                                           ProfilerFiller profilerFiller,
                                           CallbackInfo ci) {
         object.keySet().removeIf(RecentRecipeTracker::isRemoved);
+        // The infinite-knife recipe is toggleable; when switched off it is
+        // dropped just like the removed recipes above.
+        if (!ModConfig.isEnabled("knife_craft")) {
+            object.keySet().removeIf(id -> id.getNamespace().equals("noname")
+                    && id.getPath().equals("infinite_knife"));
+        }
     }
 }

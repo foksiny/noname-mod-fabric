@@ -1,8 +1,11 @@
 package dev.noname;
 
+import dev.noname.config.ModConfig;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.component.Unbreakable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -31,11 +34,21 @@ import net.minecraft.server.level.ServerPlayer;
 public final class ModItems {
 
     /**
-     * The Knife: given by the fake player on day 4 when the player answers
+     * The knife: given by the fake player on day 4 when the player answers
      * "no". One-hit-kills anything it hits and immediately breaks the moment
      * it kills something, so it can only ever be used once.
      */
     public static final Item KNIFE = new KnifeItem(new Item.Properties().stacksTo(1));
+
+    /**
+     * The Infinite Knife: the same guaranteed one-hit-kill weapon as
+     * {@link #KNIFE}, but unbreakable — it never breaks, no matter how many
+     * kills it scores. Crafted from a {@link #MEAT} item and a {@code Knife}
+     * (see {@code data/noname/recipe/infinite_knife.json}).
+     */
+    public static final Item INFINITE_KNIFE = new InfiniteKnifeItem(
+            new Item.Properties().stacksTo(1)
+                    .component(DataComponents.UNBREAKABLE, new Unbreakable(false)));
 
     /**
      * The ".". An item with no texture at all — the game renders it as the
@@ -44,6 +57,15 @@ public final class ModItems {
      * here" event starts ({@link HeIsHereHandler}).
      */
     public static final Item DOT = new DotItem(new Item.Properties().stacksTo(1));
+
+    /**
+     * The "Meat" item. From day 8 on, any killed (non-player) entity has a
+     * 5% chance to drop one (see {@link MeatDropHandler}). It is a plain
+     * food item — eat it to restore a little hunger and saturation. A "Meat"
+     * item combined with a {@code Knife} in a crafting grid yields the
+     * {@link #INFINITE_KNIFE}. Texture: {@code noname:item/meat}.
+     */
+    public static final MeatItem MEAT = MeatItem.create();
 
     private ModItems() {
     }
@@ -59,6 +81,17 @@ public final class ModItems {
         Registry.register(BuiltInRegistries.ITEM, dotId, DOT);
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
                 .register(entries -> entries.accept(DOT));
+
+        ResourceLocation meatId = ResourceLocation.fromNamespaceAndPath(Noname.MODID, "meat");
+        Registry.register(BuiltInRegistries.ITEM, meatId, MEAT);
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FOOD_AND_DRINKS)
+                .register(entries -> entries.accept(MEAT));
+
+        ResourceLocation infiniteKnifeId =
+                ResourceLocation.fromNamespaceAndPath(Noname.MODID, "infinite_knife");
+        Registry.register(BuiltInRegistries.ITEM, infiniteKnifeId, INFINITE_KNIFE);
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT)
+                .register(entries -> entries.accept(INFINITE_KNIFE));
     }
 
     /**
@@ -130,6 +163,31 @@ public final class ModItems {
     }
 
     /**
+     * The Infinite Knife: like {@link KnifeItem} — guaranteed one-hit kill on
+     * any successful hit, regardless of attack cooldown — but, being flagged
+     * as {@link DataComponents#UNBREAKABLE}, it never breaks and never takes
+     * durability damage, no matter how many kills.
+     */
+    private static final class InfiniteKnifeItem extends SwordItem {
+
+        InfiniteKnifeItem(Item.Properties properties) {
+            super(new KnifeTier(), properties);
+        }
+
+        @Override
+        public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+            if (attacker instanceof Player player) {
+                // Guarantee the kill: swing at any attack strength, armour or
+                // enchantment, the target dies in one hit.
+                if (target.isAlive()) {
+                    target.hurt(player.damageSources().playerAttack(player), 100000.0F);
+                }
+            }
+            return true;
+        }
+    }
+
+    /**
      * The "." item: deliberately has no model file, so it renders as the
      * purple-and-black missing texture. It counts how long it is held in the
      * main hand and, after 3 seconds, it disappears from the hand — then
@@ -171,7 +229,7 @@ public final class ModItems {
             // It disappears after 3 seconds...
             stack.shrink(1);
             // ...and 50% of the time something much worse happens.
-            if (level.getRandom().nextFloat() < EVENT_CHANCE) {
+            if (level.getRandom().nextFloat() < ModConfig.chance("he_is_here", EVENT_CHANCE)) {
                 HeIsHereHandler.start(player.serverLevel().getServer(), player);
             }
         }

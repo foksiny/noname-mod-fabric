@@ -1,5 +1,6 @@
 package dev.noname;
 
+import dev.noname.config.ModConfig;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,7 +41,8 @@ public final class BloodMobHandler {
      * {@code ServerLivingEntityEvents.AFTER_DEATH} (server-side only).
      */
     public static void onDeath(LivingEntity entity, DamageSource source) {
-        if (entity.getCustomName() == null
+        if (!ModConfig.isEnabled("blood_death")
+                || entity.getCustomName() == null
                 || !NAMED_MOB_NAME.equals(entity.getCustomName().getString())) {
             return;
         }

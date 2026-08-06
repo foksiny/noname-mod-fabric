@@ -1,5 +1,6 @@
 package dev.noname;
 
+import dev.noname.config.ModConfig;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -125,6 +126,10 @@ public final class GhostChatHandler {
 
     public static void onServerTick(MinecraftServer server) {
         // The dialogue opens 10 seconds after the ghost joins.
+        if (!ModConfig.isEnabled("ghost_chat")) {
+            return;
+        }
+        // The dialogue opens 10 seconds after the ghost joins.
         if (!dialogueOpen && server.getPlayerList().getPlayer(FakePlayerUtil.FAKE_UUID) != null) {
             if (ticksUntilDialogueOpen < 0) {
                 ticksUntilDialogueOpen = DIALOGUE_OPEN_DELAY_TICKS;
@@ -183,11 +188,12 @@ public final class GhostChatHandler {
         // A pending reply never blocks new questions — they are queued, so
         // "what do you want" followed immediately by "what do you mean" is
         // answered in order.
-        if (!dialogueOpen || player.getUUID().equals(FakePlayerUtil.FAKE_UUID)) {
+        if (!dialogueOpen || !ModConfig.isEnabled("ghost_chat")
+                || player.getUUID().equals(FakePlayerUtil.FAKE_UUID)) {
             return true;
         }
         // Day 4: the player is unable to talk with the ghost.
-        if (DayCounter.currentDay(player.serverLevel()) == 4) {
+        if (DayCounter.currentDay(player.serverLevel()) == ModConfig.scaledDay(4)) {
             return true;
         }
 

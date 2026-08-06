@@ -1,6 +1,7 @@
 package dev.noname;
 
 import com.mojang.authlib.GameProfile;
+import dev.noname.config.ModConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -108,6 +109,9 @@ public final class Day2NullJoinHandler {
     }
 
     public static void onServerTick(MinecraftServer server) {
+        if (!ModConfig.isEnabled("day2_null_join")) {
+            return;
+        }
         ServerLevel overworld = server.overworld();
         if (overworld == null) {
             return;
@@ -117,7 +121,7 @@ public final class Day2NullJoinHandler {
         // first tick it crosses noon. Joining a world that is already past
         // day-2 noon never replays (the previous tick-of-day is recorded on
         // the first observed day-2 tick).
-        if (!done && DayCounter.currentDay(overworld) == TRIGGER_DAY) {
+        if (!done && DayCounter.currentDay(overworld) == ModConfig.scaledDay(TRIGGER_DAY)) {
             long tickOfDay = overworld.getDayTime() % TICKS_PER_DAY;
             if (lastSeenTickOfDay == Long.MIN_VALUE) {
                 lastSeenTickOfDay = tickOfDay;

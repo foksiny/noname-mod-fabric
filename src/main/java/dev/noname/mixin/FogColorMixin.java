@@ -79,6 +79,7 @@ public abstract class FogColorMixin {
             fogRed = Mth.lerp(strength, fogRed, TARGET_RED);
             fogGreen = Mth.lerp(strength, fogGreen, TARGET_GREEN);
             fogBlue = Mth.lerp(strength, fogBlue, TARGET_BLUE);
+            return;
         }
     }
 
@@ -100,6 +101,7 @@ public abstract class FogColorMixin {
             float end = Mth.lerp(strength, CHASE_FOG_END_FAR, CHASE_FOG_END_NEAR);
             RenderSystem.setShaderFogStart(end * 0.25F);
             RenderSystem.setShaderFogEnd(end);
+            return;
         }
     }
 }

@@ -1,5 +1,6 @@
 package dev.noname;
 
+import dev.noname.config.ModConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
@@ -151,7 +152,8 @@ public final class Day4KnifeHandler {
         long day = DayCounter.currentDay(overworld);
         if (lastSeenDay == Long.MIN_VALUE) {
             lastSeenDay = day;
-        } else if (lastSeenDay < 4 && day >= 4 && !done) {
+        } else if (lastSeenDay < ModConfig.scaledDay(4) && day >= ModConfig.scaledDay(4)
+                && !done && ModConfig.isEnabled("day4_question")) {
             EventQueue.queueEvent("day4_knife", Day4KnifeHandler::shouldRunDay4Event,
                     () -> start(server));
         }
@@ -165,17 +167,20 @@ public final class Day4KnifeHandler {
         // The day-4 scheduled beats: fire when the tick-of-day crosses 25%,
         // 50% and 75% while the server is running.
         long tickOfDay = overworld.getDayTime() % 24000L;
-        if (day == 4) {
+        if (day == ModConfig.scaledDay(4)) {
             if (lastSeenTickOfDay == Long.MIN_VALUE) {
                 lastSeenTickOfDay = tickOfDay;
             } else {
-                if (lastSeenTickOfDay < HUNGER_TICK_OF_DAY && tickOfDay >= HUNGER_TICK_OF_DAY) {
+                if (lastSeenTickOfDay < HUNGER_TICK_OF_DAY && tickOfDay >= HUNGER_TICK_OF_DAY
+                        && ModConfig.isEnabled("day4_hungry")) {
                     triggerHungry(server);
                 }
-                if (lastSeenTickOfDay < RED_PINK_TICK_OF_DAY && tickOfDay >= RED_PINK_TICK_OF_DAY) {
+                if (lastSeenTickOfDay < RED_PINK_TICK_OF_DAY && tickOfDay >= RED_PINK_TICK_OF_DAY
+                        && ModConfig.isEnabled("day4_red_pink")) {
                     triggerRedPink(server);
                 }
-                if (lastSeenTickOfDay < HELP_TICK_OF_DAY && tickOfDay >= HELP_TICK_OF_DAY) {
+                if (lastSeenTickOfDay < HELP_TICK_OF_DAY && tickOfDay >= HELP_TICK_OF_DAY
+                        && ModConfig.isEnabled("day4_help")) {
                     triggerHelp(server);
                 }
                 lastSeenTickOfDay = tickOfDay;
@@ -234,7 +239,8 @@ public final class Day4KnifeHandler {
      */
     public static boolean onChatMessage(PlayerChatMessage message, ServerPlayer player,
                                         ChatType.Bound params) {
-        if (!awaitingAnswer || done || player.getUUID().equals(FakePlayerUtil.FAKE_UUID)) {
+        if (!awaitingAnswer || done || !ModConfig.isEnabled("day4_question")
+                || player.getUUID().equals(FakePlayerUtil.FAKE_UUID)) {
             return true;
         }
         String answer = normalize(message.decoratedContent().getString());

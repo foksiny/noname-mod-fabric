@@ -41,7 +41,9 @@ public abstract class FoliagePlacerMixin {
             return;
         }
         long day = dev.noname.DayCounter.currentDay(accessor);
-        if (day < 4 || day >= 7) {
+        if (day < dev.noname.config.ModConfig.scaledDay(4)
+                || day >= dev.noname.config.ModConfig.scaledDay(7)
+                || !dev.noname.config.ModConfig.isEnabled("leafless_trees")) {
             return;
         }
         // Days 4-6: don't place any leaves at all. From day 7 on the trees

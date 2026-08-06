@@ -1,6 +1,7 @@
 package dev.noname;
 
 import com.mojang.authlib.GameProfile;
+import dev.noname.config.ModConfig;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
@@ -77,9 +78,10 @@ public final class Day7FakePlayerHandler {
         // current day, so joining a world that is already on day 7 never
         // replays the event.
         long day = DayCounter.currentDay(overworld);
+        long day7 = ModConfig.scaledDay(7);
         if (lastSeenDay == Long.MIN_VALUE) {
             lastSeenDay = day;
-        } else if (lastSeenDay < 7 && day >= 7) {
+        } else if (ModConfig.isEnabled("day7_fake") && lastSeenDay < day7 && day >= day7) {
             EventQueue.queueEvent("day7_fake", Day7FakePlayerHandler::shouldRunDay7Event,
                     () -> spawnApparitions(server));
         }

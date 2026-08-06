@@ -1,6 +1,8 @@
 package dev.noname.mixin;
 
 import dev.noname.DayCounter;
+import dev.noname.IseItHandler;
+import dev.noname.config.ModConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
@@ -14,11 +16,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Sleeping in a bed is blocked only on day 2: right-clicking a bed is
- * cancelled on the server and the player gets the error message
- * "An error occurred while trying to call Bed.sleep() function"
- * (key {@code error.unable.sleep}). Every other day the player can sleep
- * as usual.
+ * Sleeping in a bed is blocked on day 2, and while an "ise it" apparition
+ * is active for the player: right-clicking a bed is cancelled on the server
+ * and the player gets the error message "An error occurred while trying to
+ * call Bed.sleep() function" (key {@code error.unable.sleep}). Every other
+ * situation the player can sleep as usual.
  *
  * <p>The server-side use-item-on-block packet handler is the authoritative
  * choke point for every bed right-click (the equivalent of NeoForge's
@@ -38,8 +40,11 @@ public abstract class BedUseMixin {
         }
 
         long day = DayCounter.currentDay(level);
-        // Only day 2 blocks sleeping; every other day the player can sleep.
-        if (day != 2) {
+        // Day 2 blocks sleeping (when enabled), and so does an active
+        // "ise it" apparition.
+        boolean day2Block = day == ModConfig.scaledDay(2)
+                && ModConfig.isEnabled("sleep_block");
+        if (!day2Block && !IseItHandler.isActiveFor(player)) {
             return;
         }
 

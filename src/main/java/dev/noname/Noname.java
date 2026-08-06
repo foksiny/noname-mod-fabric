@@ -1,13 +1,16 @@
 package dev.noname;
 
 import dev.noname.command.NonameCommand;
+import dev.noname.config.ModConfig;
 import dev.noname.network.ModPayloads;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Main mod class for Noname.
@@ -27,10 +30,12 @@ public class Noname implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        ModConfig.load();
         ModSounds.register();
         ModParticles.register();
         ModBlocks.register();
         ModItems.register();
+        ModEntities.register();
         ModPayloads.registerCommon();
         ModPayloads.registerServer();
 
@@ -47,12 +52,20 @@ public class Noname implements ModInitializer {
         ServerTickEvents.START_SERVER_TICK.register(SignPlacerHandler::onServerTick);
         ServerTickEvents.START_SERVER_TICK.register(Day10LookHandler::onServerTick);
         ServerTickEvents.START_SERVER_TICK.register(DoorHandler::onServerTick);
+        ServerTickEvents.START_SERVER_TICK.register(DoorKnockHandler::onServerTick);
         ServerTickEvents.START_SERVER_TICK.register(BloodFleshBlockHandler::onServerTick);
         ServerTickEvents.START_SERVER_TICK.register(Day11ChestHandler::onServerTick);
         ServerTickEvents.START_SERVER_TICK.register(HeIsHereHandler::onServerTick);
         ServerTickEvents.START_SERVER_TICK.register(Day5PigHandler::onServerTick);
+        ServerTickEvents.START_SERVER_TICK.register(IseItHandler::onServerTick);
+        ServerTickEvents.START_SERVER_TICK.register(CaveZombieHandler::onServerTick);
+        ServerTickEvents.START_SERVER_TICK.register(CaveDiggingSoundHandler::onServerTick);
+        ServerTickEvents.START_SERVER_TICK.register(HorseKillHandler::onServerTick);
         ServerLivingEntityEvents.AFTER_DEATH.register(BloodMobHandler::onDeath);
         ServerLivingEntityEvents.AFTER_DEATH.register(Day5PigHandler::onDeath);
+        ServerLivingEntityEvents.AFTER_DEATH.register(MeatDropHandler::onDeath);
+        PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, entity) ->
+                PlayerPlacedBlocks.remove((ServerLevel) world, pos));
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register(Day4KnifeHandler::onChatMessage);
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register(GhostChatHandler::onChatMessage);
         ServerPlayConnectionEvents.JOIN.register(JoinMessageHandler::onPlayerJoin);

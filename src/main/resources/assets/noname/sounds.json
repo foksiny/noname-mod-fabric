@@ -1,4 +1,11 @@
 {
+  "do_you_see_me": {
+    "category": "ambient",
+    "subtitle": "subtitles.noname.do_you_see_me",
+    "sounds": [
+      { "name": "noname:do_you_see_me/do_you_see_me", "stream": false }
+    ]
+  },
   "it_hurts_to_see": {
     "category": "ambient",
     "subtitle": "subtitles.noname.it_hurts_to_see",
@@ -95,6 +102,21 @@
     "subtitle": "subtitles.noname.day6_laughs",
     "sounds": [
       { "name": "noname:day6_laughs/day6_laughs", "stream": false }
+    ]
+  },
+  "door_knock": {
+    "category": "ambient",
+    "subtitle": "subtitles.noname.door_knock",
+    "sounds": [
+      { "name": "noname:door_knock/knock_person", "stream": false },
+      { "name": "noname:door_knock/knock_alex", "stream": false },
+      { "name": "noname:door_knock/knock_on_door", "stream": false },
+      { "name": "noname:door_knock/knock_door", "stream": false },
+      { "name": "noname:door_knock/knock_angry", "stream": false },
+      { "name": "noname:door_knock/knock_hammering", "stream": false },
+      { "name": "noname:door_knock/knock_wooden", "stream": false },
+      { "name": "noname:door_knock/knock_wooden2", "stream": false },
+      { "name": "noname:door_knock/knock_door2", "stream": false }
     ]
   }
 }

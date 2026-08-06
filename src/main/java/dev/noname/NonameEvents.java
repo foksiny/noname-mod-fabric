@@ -7,6 +7,7 @@ import dev.noname.client.Day5FlashHandler;
 import dev.noname.client.Day6Handler;
 import dev.noname.client.Day8SkyHandler;
 import dev.noname.client.Day10LookClient;
+import dev.noname.client.Day10WhisperHandler;
 import dev.noname.client.HeIsHereClient;
 import dev.noname.network.NonameEventPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -56,6 +57,7 @@ public final class NonameEvents {
             case "named_mob"       -> NamedMobBehaviourHandler.spawnOneNearEachPlayer(server);
             case "sign_place"      -> SignPlacerHandler.placeOneNearEachPlayer(server);
             case "door_creak"      -> DoorHandler.toggleDoorNow(server);
+            case "door_knock"      -> DoorKnockHandler.triggerNow(server);
             case "day3_timeskip"   -> Day3TimeSkipHandler.triggerNow(server);
             case "day2_null_join"  -> Day2NullJoinHandler.triggerNow(server);
             case "day6_static"     -> sendToAllPlayers(server, NonameEventPayload.play("day6_static"));
@@ -63,10 +65,13 @@ public final class NonameEvents {
             case "day11_chest"     -> Day11ChestHandler.triggerOneNearEachPlayer(server);
 case "he_is_here" -> HeIsHereHandler.triggerForEachPlayer(server);
             case "day5_pig" -> Day5PigHandler.spawnOneNearEachPlayer(server);
+            case "ise_it"        -> IseItHandler.triggerNow(server);
+            case "cave_zombie"   -> CaveZombieHandler.triggerOneNearEachPlayer(server);
+            case "cave_digging"  -> CaveDiggingSoundHandler.triggerForEachPlayer(server);
 
             // Client-only events: dispatch the play payload to every online player.
             case "creepy_bass", "day2_message", "disc_11", "day5_flash", "day8_sky",
-                    "day4_help" ->
+                    "day4_help", "day10_whisper" ->
                     sendToAllPlayers(server, NonameEventPayload.play(key));
 
             default -> { /* unknown — the command rejects names before we get here */ }
@@ -95,9 +100,13 @@ case "he_is_here" -> HeIsHereHandler.triggerForEachPlayer(server);
         Day7FakePlayerHandler.stopAll();
         SignPlacerHandler.cancelArmed();
         DoorHandler.stopAll();
+        DoorKnockHandler.stopAll();
         Day10LookHandler.stopAll();
         HeIsHereHandler.stopAll();
         Day5PigHandler.stopAll();
+        IseItHandler.stopAll();
+        CaveZombieHandler.stopAll();
+        CaveDiggingSoundHandler.stopAll();
     }
 
     /**
@@ -119,6 +128,7 @@ case "he_is_here" -> HeIsHereHandler.triggerForEachPlayer(server);
             case "day6_static"   -> Day6Handler.triggerNow();
             case "day4_help"     -> Day4HelpPopup.showNow();
             case "day10_look"    -> Day10LookClient.start();
+            case "day10_whisper" -> Day10WhisperHandler.triggerNow();
             case "day10_look_stop" -> Day10LookClient.stop();
             case "he_is_here"    -> HeIsHereClient.start();
             case "he_is_here:death" -> HeIsHereClient.death();
@@ -156,6 +166,7 @@ case "he_is_here" -> HeIsHereHandler.triggerForEachPlayer(server);
         Day5FlashHandler.stopAll();
         Day8SkyHandler.stopAll();
         Day10LookClient.stop();
+        Day10WhisperHandler.stopAll();
         Day4HelpPopup.closeNow();
         HeIsHereClient.stop();
     }

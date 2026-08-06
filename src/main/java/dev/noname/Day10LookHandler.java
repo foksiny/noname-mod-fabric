@@ -1,6 +1,7 @@
 package dev.noname;
 
 import com.mojang.authlib.GameProfile;
+import dev.noname.config.ModConfig;
 import dev.noname.network.NonameEventPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
@@ -143,7 +144,7 @@ public final class Day10LookHandler {
             EventQueue.release("day10_look");
         }
 
-        if (day < 10) {
+        if (day < ModConfig.scaledDay(10) || !ModConfig.isEnabled("day10_look")) {
             ticksUntilRoll.clear();
             pendingPlayers.clear();
             return;
@@ -162,7 +163,7 @@ public final class Day10LookHandler {
             }
             ticksUntilRoll.put(player.getUUID(), MIN_ROLL_TICKS
                     + overworld.getRandom().nextInt(MAX_ROLL_TICKS - MIN_ROLL_TICKS + 1));
-            if (overworld.getRandom().nextFloat() < EVENT_CHANCE) {
+            if (overworld.getRandom().nextFloat() < ModConfig.chance("day10_look", EVENT_CHANCE)) {
                 // Player rolled successfully - add to pending list
                 if (!pendingPlayers.contains(player.getUUID())) {
                     pendingPlayers.add(player.getUUID());

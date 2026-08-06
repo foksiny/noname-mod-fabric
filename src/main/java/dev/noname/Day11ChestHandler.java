@@ -1,5 +1,6 @@
 package dev.noname;
 
+import dev.noname.config.ModConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -56,7 +57,7 @@ public final class Day11ChestHandler {
             return;
         }
         long day = DayCounter.currentDay(overworld);
-        if (day < 11) {
+        if (day < ModConfig.scaledDay(11) || !ModConfig.isEnabled("day11_chest")) {
             ticksUntilRoll.clear();
             return;
         }
@@ -71,7 +72,7 @@ public final class Day11ChestHandler {
             }
             ticksUntilRoll.put(player.getUUID(), MIN_ROLL_TICKS
                     + overworld.getRandom().nextInt(MAX_ROLL_TICKS - MIN_ROLL_TICKS + 1));
-            if (overworld.getRandom().nextFloat() < EVENT_CHANCE) {
+            if (overworld.getRandom().nextFloat() < ModConfig.chance("day11_chest", EVENT_CHANCE)) {
                 spawnChestNear(player);
             }
         }
