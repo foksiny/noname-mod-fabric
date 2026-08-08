@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.level.GameRules;
 
 /**
  * Shows a yellow "{@code <player> joined the game}" message when a player
@@ -36,7 +37,19 @@ public final class JoinMessageHandler {
         var data = server.overworld().getDataStorage().computeIfAbsent(
                 NonameSavedData.factory(), NonameSavedData.ID);
         if (!data.isWarningShown()) {
+            // The keep-inventory prompt follows once the warning is acknowledged.
             ModPayloads.sendShowWarning(player);
+        } else {
+            maybeSendKeepInventoryPrompt(player, data);
+        }
+    }
+
+    /** Sends the keep-inventory prompt if it hasn't been asked before and
+     *  keepInventory is currently off. */
+    public static void maybeSendKeepInventoryPrompt(ServerPlayer player, NonameSavedData data) {
+        if (!data.isKeepInventoryPromptShown()
+                && !player.server.getGameRules().getRule(GameRules.RULE_KEEPINVENTORY).get()) {
+            ModPayloads.sendShowKeepInventoryPrompt(player);
         }
     }
 }

@@ -15,12 +15,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Marks hostile mobs that were spawned deliberately (spawn egg or
- * {@code /summon}), or on the first day, so {@link HostileSpawnGateMixin}
- * lets them through. Every other hostile mob is blocked at
- * {@code ServerLevel.addFreshEntity} — cancelling {@code finalizeSpawn} would
- * not work: in 1.21.1 the callers (NaturalSpawner, BaseSpawner, ...) never
- * look at its return value and add the mob to the world anyway.
+ * Marks mobs that were spawned deliberately (spawn egg or {@code /summon}),
+ * or on the first day, so {@link HostileSpawnGateMixin} lets them through.
+ * Every other mob is blocked at {@code ServerLevel.addFreshEntity} —
+ * cancelling {@code finalizeSpawn} would not work: in 1.21.1 the callers
+ * (NaturalSpawner, BaseSpawner, ...) never look at its return value and add
+ * the mob to the world anyway.
+ *
+ * <p>Hostile mobs are marked from day 1 on (the hostile-mob gate); all
+ * other categories are marked from day 9 on (the natural-spawn gate), so
+ * spawn-egg and {@code /summon} animals keep working after the world goes
+ * empty.
  */
 @Mixin(Mob.class)
 public abstract class MobSpawnMixin {
@@ -32,13 +37,14 @@ public abstract class MobSpawnMixin {
             MobSpawnType spawnType,
             SpawnGroupData spawnGroupData,
             CallbackInfoReturnable<SpawnGroupData> cir) {
-        // Only hostile mobs are gated; the mark is ignored for everything else.
         Mob self = (Mob) (Object) this;
-        if (self.getType().getCategory() != MobCategory.MONSTER) {
-            return;
-        }
-        // Nothing to mark when the hostile-mob block is switched off.
-        if (!ModConfig.isEnabled("hostile_stop")) {
+        if (self.getType().getCategory() == MobCategory.MONSTER) {
+            // Nothing to mark when the hostile-mob block is switched off.
+            if (!ModConfig.isEnabled("hostile_stop")) {
+                return;
+            }
+        } else if (!ModConfig.isEnabled("natural_spawn_stop")) {
+            // Nothing to mark when the natural-spawn block is switched off.
             return;
         }
         HostileSpawnTracker.markDeliberate(self,

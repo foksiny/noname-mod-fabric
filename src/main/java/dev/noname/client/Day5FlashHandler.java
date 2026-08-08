@@ -8,8 +8,9 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.sounds.SoundSource;
 
 /**
- * Day-5+ screen flash. Every minute spent on day 5 or later, there is a 25%
- * chance that a black screen — with "i can't stop doing it" on it — covers
+ * Day-5+ screen flash. Every 1.5 minutes spent on day 5 or later, there is
+ * a ~16.7% chance that a black screen — with "i can't stop doing it" on it —
+ * covers
  * the player's view for half a second ({@link Day5FlashOverlay} draws it).
  * While the flash is up the screen is entirely black, so the player is blind
  * to the world for those 10 ticks.
@@ -21,14 +22,14 @@ import net.minecraft.sounds.SoundSource;
  */
 public final class Day5FlashHandler {
 
-    /** One full cycle in ticks (20 tps → 1200 ticks = 1 minute). */
-    private static final int FLASH_INTERVAL_TICKS = 20 * 60;
+    /** One full cycle in ticks (20 tps → 1800 ticks = 1.5 minutes). */
+    private static final int FLASH_INTERVAL_TICKS = 20 * 90;
 
     /** How long the flash stays on screen, in ticks (0.5 seconds). */
     private static final int FLASH_DURATION_TICKS = 20 / 2;
 
-    /** Probability that a cycle actually flashes. */
-    private static final float FLASH_CHANCE = 0.25F;
+    /** Probability that a cycle actually flashes (1.5× rarer than before). */
+    private static final float FLASH_CHANCE = 0.25F / 1.5F;
 
     /** Ticks until the next flash attempt; reset whenever the player is not
      *  on day 5+, so the first attempt happens 1 minute into day 5. */

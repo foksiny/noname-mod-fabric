@@ -6,6 +6,7 @@ import dev.noname.network.ModPayloads;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
@@ -45,6 +46,7 @@ public class Noname implements ModInitializer {
         ServerTickEvents.START_SERVER_TICK.register(KilledAnimalsLootHandler::onServerTick);
         ServerTickEvents.START_SERVER_TICK.register(Day4KnifeHandler::onServerTick);
         ServerTickEvents.START_SERVER_TICK.register(Day3TimeSkipHandler::onServerTick);
+        ServerTickEvents.START_SERVER_TICK.register(Day3StalkerHandler::onServerTick);
         ServerTickEvents.START_SERVER_TICK.register(Day2NullJoinHandler::onServerTick);
         ServerTickEvents.START_SERVER_TICK.register(Day7FakePlayerHandler::onServerTick);
         ServerTickEvents.START_SERVER_TICK.register(HostileMobHandler::onServerTick);
@@ -61,6 +63,12 @@ public class Noname implements ModInitializer {
         ServerTickEvents.START_SERVER_TICK.register(CaveZombieHandler::onServerTick);
         ServerTickEvents.START_SERVER_TICK.register(CaveDiggingSoundHandler::onServerTick);
         ServerTickEvents.START_SERVER_TICK.register(HorseKillHandler::onServerTick);
+        ServerTickEvents.START_SERVER_TICK.register(CameraSpasmHandler::onServerTick);
+        ServerTickEvents.START_SERVER_TICK.register(Day5DesktopHandler::onServerTick);
+        ServerTickEvents.START_SERVER_TICK.register(ChunkDeletionHandler::onServerTick);
+        ServerTickEvents.START_SERVER_TICK.register(Day13StalkerHandler::onServerTick);
+        ServerTickEvents.START_SERVER_TICK.register(Day14DeathHandler::onServerTick);
+        ServerTickEvents.START_SERVER_TICK.register(Day8SmileHandler::onServerTick);
         ServerLivingEntityEvents.AFTER_DEATH.register(BloodMobHandler::onDeath);
         ServerLivingEntityEvents.AFTER_DEATH.register(Day5PigHandler::onDeath);
         ServerLivingEntityEvents.AFTER_DEATH.register(MeatDropHandler::onDeath);
@@ -68,7 +76,9 @@ public class Noname implements ModInitializer {
                 PlayerPlacedBlocks.remove((ServerLevel) world, pos));
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register(Day4KnifeHandler::onChatMessage);
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register(GhostChatHandler::onChatMessage);
+        ServerMessageEvents.ALLOW_CHAT_MESSAGE.register(MeatChatHandler::onChatMessage);
         ServerPlayConnectionEvents.JOIN.register(JoinMessageHandler::onPlayerJoin);
+        ServerPlayerEvents.AFTER_RESPAWN.register(Day14DeathHandler::onRespawn);
         CommandRegistrationCallback.EVENT.register(NonameCommand::onRegisterCommands);
     }
 }

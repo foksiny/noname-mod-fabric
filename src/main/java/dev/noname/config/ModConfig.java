@@ -62,6 +62,7 @@ public final class ModConfig {
 
     private static Path configPath;
     private static int speedLevel = DEFAULT_SPEED_LEVEL;
+
     /** Per-event chance multipliers; an absent key means 100%. */
     private static final Map<String, Float> chances =
             Collections.synchronizedMap(new LinkedHashMap<>());
@@ -77,17 +78,19 @@ public final class ModConfig {
         map.put("ghost_chat",       "Ghost chat dialogue");
         map.put("it_hurts_to_see",  "Ghost \"it hurts to see\" stinger");
         map.put("hostile_stop",     "Day 1+: hostile mobs stopped");
+        map.put("natural_spawn_stop", "Day 9+: natural mob spawns stopped");
         map.put("village_removal",  "Day 1+: villagers & iron golems removed");
         map.put("sleep_block",      "Day 2: sleeping blocked");
         map.put("day2_null_join",   "Day 2: \"null\" visitor");
         map.put("day2_message",     "Day 2: creep message");
         map.put("disc_11",          "Day 2: music disc 11");
         map.put("day3_timeskip",    "Day 3: sudden night time-skip");
+        map.put("day3_stalker",     "Day 3+: fake player flickers (20% per 1-2 min)");
         map.put("day4_question",    "Day 4: the question (yes/no)");
         map.put("day4_hungry",      "Day 4: \"i'm feeling hungry\"");
         map.put("day4_red_pink",    "Day 4: \"really red and pink\"");
         map.put("day4_help",        "Day 4: \"help me\" window");
-        map.put("loot_pile",        "Day 4+: animal loot piles");
+        map.put("loot_pile",        "Day 4+: animal loot piles (2x, mostly food day 9+)");
         map.put("leafless_trees",   "Day 4+: leafless trees & broken logs");
         map.put("knife_craft",      "Infinite knife recipe (meat + knife)");
         map.put("horse_kill",       "Horses die near players");
@@ -96,23 +99,31 @@ public final class ModConfig {
         map.put("creepy_bass",      "Day 4+: creepy bass stinger");
         map.put("day5_flash",       "Day 5+: screen flash");
         map.put("day5_pig",         "Day 5+: infected pigs");
+        map.put("day5_desktop",     "Day 5: fake player: \"look at your desktop\" (writes hello.txt)");
         map.put("pillar",           "Day 6+: bedrock pillars");
         map.put("day6_static",      "Day 6: static overlay");
         map.put("ise_it",           "Day 6+: \"ise it\" apparition");
         map.put("day7_fake",        "Day 7: fake player appears");
+        map.put("day7_lonely",      "Day 7: lonely chat at midday");
         map.put("blood_death",      "Day 7+: blood mobs");
         map.put("named_mob",        "Day 7+: named mobs");
         map.put("hostile_clear",    "Day 8+: hostiles vanish");
         map.put("flesh_tree",       "Day 8+: flesh trees");
         map.put("day8_sky",         "Day 8+: red sky");
+        map.put("day8_smile",       "Day 8: \":)\" window + \" .txt\" on desktop");
         map.put("cave_zombie",      "Day 8+: cave stalker zombie");
         map.put("cave_digging",     "Day 8+: cave digging sounds");
         map.put("meat_drops",       "Day 8+: meat drops");
         map.put("sign_place",       "Day 9+: creepy signs");
+        map.put("camera_spasm",     "Day 1+: camera spasm (18% per 3-6 min)");
         map.put("day10_look",       "Day 10+: look-behind event");
         map.put("day10_whisper",    "Day 10+: screen whispers");
         map.put("red_rain",         "Day 10+: red rain");
         map.put("day11_chest",      "Day 11+: mystery chests");
+        map.put("chunk_delete",     "Day 13+: chunk ahead of you deleted (void)");
+        map.put("day13_stalker",    "Day 13+: fake player stalks you (37% per 4-9 min)");
+        map.put("day14_death",       "Day 14+: random lightning death (15% per 4-9 min)");
+        map.put("chat_block",        "Day 15+: chat can no longer be opened (keys do nothing)");
         map.put("he_is_here",       "Secret: \"he is here\" chase");
         map.put("scrambled_names",  "Scrambled item names");
         map.put("cave_sounds",      "Cave ambience sounds");

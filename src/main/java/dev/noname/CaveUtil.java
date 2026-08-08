@@ -20,10 +20,15 @@ public final class CaveUtil {
     /**
      * {@return true when the player is standing underground: feet on solid
      * ground, head in the air, opaque terrain overhead within 24 blocks and
-     * at least 5 blocks of rock between them and the surface}
+     * at least 5 blocks of rock between them and the surface} The Alpha
+     * terrain's {@code alpha_is_ocean} is consulted first so an ocean floor
+     * never counts as a cave.
      */
     public static boolean isInCave(ServerLevel level, ServerPlayer player) {
         BlockPos pos = player.blockPosition();
+        if (TerrainUtil.isOcean(level, pos)) {
+            return false;
+        }
         if (!level.getBlockState(pos.above()).isAir()
                 || !level.getBlockState(pos.below()).isSolid()) {
             return false;

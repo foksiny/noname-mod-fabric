@@ -13,7 +13,7 @@ import net.minecraft.network.chat.Component;
  */
 public final class VersionOverlay {
 
-    private static final String VERSION_TEXT = "Minecraft v1.21.1";
+    private static final String VERSION_TEXT = "Minecraft Alpha v1.21.1_01";
 
     private static final int TEXT_COLOR = 0xFFFFFFFF;
 

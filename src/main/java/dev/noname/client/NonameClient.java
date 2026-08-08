@@ -5,6 +5,7 @@ import dev.noname.config.ModConfig;
 import dev.noname.network.ModPayloads;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -27,6 +28,13 @@ public final class NonameClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ModConfig.load();
+        NonameClientState.load();
+
+        // The first time the player enters a world, the main menu's "Quit
+        // Game" button is locked away forever.
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) ->
+                NonameClientState.lockQuitForever());
+
         ClientTickEvents.START_CLIENT_TICK.register(CaveSoundHandler::onClientTick);
         ClientTickEvents.START_CLIENT_TICK.register(Day2CreepHandler::onClientTick);
         ClientTickEvents.START_CLIENT_TICK.register(Day5FlashHandler::onClientTick);
@@ -38,6 +46,10 @@ public final class NonameClient implements ClientModInitializer {
         ClientTickEvents.START_CLIENT_TICK.register(ScrambledItemNameHandler::onClientTick);
         ClientTickEvents.START_CLIENT_TICK.register(ShaderDetectionHandler::onClientTick);
         ClientTickEvents.START_CLIENT_TICK.register(Day10WhisperHandler::onClientTick);
+        ClientTickEvents.START_CLIENT_TICK.register(CameraSpasmClient::onClientTick);
+        ClientTickEvents.START_CLIENT_TICK.register(StalkerDarknessHandler::onClientTick);
+        ClientTickEvents.START_CLIENT_TICK.register(StalkerStaticHandler::onClientTick);
+        ClientTickEvents.START_CLIENT_TICK.register(Day5DesktopClient::onClientTick);
 
         HudRenderCallback.EVENT.register(Day2CreepOverlay::onHudRender);
         HudRenderCallback.EVENT.register(Day5FlashOverlay::onHudRender);
@@ -48,6 +60,8 @@ public final class NonameClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register(VersionOverlay::onHudRender);
         HudRenderCallback.EVENT.register(DayCounterOverlay::onHudRender);
         HudRenderCallback.EVENT.register(Day10WhisperOverlay::onHudRender);
+        HudRenderCallback.EVENT.register(StalkerDarknessOverlay::onHudRender);
+        HudRenderCallback.EVENT.register(StalkerStaticOverlay::onHudRender);
         ScreenEvents.AFTER_INIT.register(ButtonRestrictionsHandler::onScreenInit);
 
         // Blood drops from dying named mobs.

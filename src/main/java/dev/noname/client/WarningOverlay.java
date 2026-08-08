@@ -42,9 +42,6 @@ public final class WarningOverlay extends Screen {
         addRenderableWidget(Button.builder(BUTTON_TEXT, button -> {
             onClose();
         }).bounds(buttonX, buttonY, buttonWidth, buttonHeight).build());
-
-        // Send acknowledgment to server
-        ModPayloads.sendWarningAcknowledged();
     }
 
     @Override
@@ -78,6 +75,8 @@ public final class WarningOverlay extends Screen {
 
     @Override
     public void onClose() {
+        // Send acknowledgment to server; the keep-inventory prompt follows.
+        ModPayloads.sendWarningAcknowledged();
         Minecraft.getInstance().setScreen(null);
     }
 }

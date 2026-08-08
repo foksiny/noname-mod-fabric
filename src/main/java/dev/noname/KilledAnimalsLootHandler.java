@@ -17,6 +17,11 @@ import net.minecraft.world.item.Items;
  * foot, eggs, ink sacs, raw cod / salmon. Hostile-mob loot (rotten flesh,
  * bones, string, arrows, gunpowder, …) is deliberately never spawned.
  *
+ * <p>From day 9 onward the world goes empty of natural mobs
+ * ({@code natural_spawn_stop}), so the loot becomes the player's food
+ * source: piles spawn twice as often and 75% of the time are actually
+ * edible — cooked and raw meats, bread, apples and eggs.
+ *
  * <p>The stings are server-side: on a randomized timer (averaging roughly one
  * pile every few minutes of play) and only while there are players near, a
  * small pile of 1–2 animal-loot stacks is dropped at a random spot near each
@@ -47,6 +52,38 @@ public final class KilledAnimalsLootHandler {
             Items.COD,
             Items.SALMON,
     };
+
+    /**
+     * Edible loot used for most piles from the food phase (day 9+) on: cooked
+     * and raw meats, bread, apples and eggs — actual food for the player.
+     */
+    private static final Item[] EDIBLE_DROPS = {
+            Items.COOKED_BEEF,
+            Items.COOKED_PORKCHOP,
+            Items.COOKED_MUTTON,
+            Items.COOKED_CHICKEN,
+            Items.COOKED_RABBIT,
+            Items.COOKED_COD,
+            Items.COOKED_SALMON,
+            Items.BREAD,
+            Items.APPLE,
+            Items.EGG,
+            Items.BEEF,
+            Items.PORKCHOP,
+            Items.MUTTON,
+            Items.CHICKEN,
+            Items.RABBIT,
+            Items.COD,
+            Items.SALMON,
+    };
+
+    /** Day from which the loot piles spawn 2x as often and are mostly
+     *  edible. */
+    private static final long FOOD_PHASE_DAY = 9L;
+
+    /** Chance a food-phase pile picks from {@link #EDIBLE_DROPS} instead of
+     *  {@link #ANIMAL_DROPS}. */
+    private static final float FOOD_CHANCE = 0.75F;
 
     /** Min ticks between trigger checks (kicks off the random wait). */
     private static final int MIN_WAIT_TICKS = 20 * 60;       // 60 s
@@ -91,8 +128,14 @@ public final class KilledAnimalsLootHandler {
         // (Re-)arm the countdown when none is active.
         if (ticksUntilNextPile < 0) {
             RandomSource rng = overworld.getRandom();
-            ticksUntilNextPile = MIN_WAIT_TICKS
+            int wait = MIN_WAIT_TICKS
                     + rng.nextInt(MAX_WAIT_TICKS - MIN_WAIT_TICKS + 1);
+            // From day 9 on the piles come twice as often: the world's
+            // natural mobs are gone, this is how the player gets food.
+            if (DayCounter.currentDay(overworld) >= ModConfig.scaledDay(FOOD_PHASE_DAY)) {
+                wait /= 2;
+            }
+            ticksUntilNextPile = wait;
         }
 
         if (--ticksUntilNextPile > 0) {
@@ -152,8 +195,12 @@ public final class KilledAnimalsLootHandler {
 
         int stacks = MIN_ITEMS_PER_PILE
                 + rng.nextInt(MAX_ITEMS_PER_PILE - MIN_ITEMS_PER_PILE + 1);
+        // From day 9 on, most of the loot is actually edible.
+        boolean foodPhase = DayCounter.currentDay(level) >= ModConfig.scaledDay(FOOD_PHASE_DAY);
         for (int i = 0; i < stacks; i++) {
-            Item type = ANIMAL_DROPS[rng.nextInt(ANIMAL_DROPS.length)];
+            Item type = foodPhase && rng.nextFloat() < FOOD_CHANCE
+                    ? EDIBLE_DROPS[rng.nextInt(EDIBLE_DROPS.length)]
+                    : ANIMAL_DROPS[rng.nextInt(ANIMAL_DROPS.length)];
             int count = MIN_COUNT_PER_STACK
                     + rng.nextInt(MAX_COUNT_PER_STACK - MIN_COUNT_PER_STACK + 1);
             ItemStack stack = new ItemStack(type, count);

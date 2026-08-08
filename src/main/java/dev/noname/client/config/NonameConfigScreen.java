@@ -58,6 +58,10 @@ public final class NonameConfigScreen extends Screen {
     private static final Component RESET = Component.literal("Reset all");
     private static final Component FEATURES_LABEL = Component.literal("Visual features");
 
+    /** Events list top Y, in screen coords. Leaves room above for the
+     *  speed slider and the visual-feature checkboxes. */
+    private static final int EVENT_LIST_Y = 94;
+
     private final Screen lastScreen;
 
     public NonameConfigScreen(Screen lastScreen) {
@@ -87,8 +91,8 @@ public final class NonameConfigScreen extends Screen {
         }
 
         EventList list = new EventList(this.minecraft, this.width - 40,
-                this.height - 162, 110);
-        list.setPosition(20, 110);
+                this.height - 52 - EVENT_LIST_Y, EVENT_LIST_Y);
+        list.setPosition(20, EVENT_LIST_Y);
         for (Map.Entry<String, String> entry : ModConfig.EVENTS.entrySet()) {
             String key = entry.getKey();
             int checkboxMaxWidth = list.rowWidth() - ROW_SLIDER_WIDTH - 24;

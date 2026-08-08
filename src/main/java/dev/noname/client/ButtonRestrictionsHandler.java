@@ -17,6 +17,9 @@ import net.minecraft.network.chat.contents.TranslatableContents;
  * <ul>
  *   <li>Pause menu (in a world): "Open to LAN" — {@code error.unable.open.lanBtn}</li>
  *   <li>Main menu: "Multiplayer" — {@code error.unable.open.multiplayerBtn}</li>
+ *   <li>Main menu: "Quit Game", once the player has joined a world at least
+ *       once — {@code error.unable.open.quitBtn}. Irreversible: the flag is
+ *       kept in {@link NonameClientState} and never goes back.</li>
  * </ul>
  */
 public final class ButtonRestrictionsHandler {
@@ -29,6 +32,9 @@ public final class ButtonRestrictionsHandler {
             disableButton(screen, "menu.shareToLan", "error.unable.open.lanBtn");
         } else if (screen instanceof TitleScreen) {
             disableButton(screen, "menu.multiplayer", "error.unable.open.multiplayerBtn");
+            if (NonameClientState.isQuitLocked()) {
+                disableButton(screen, "menu.quit", "error.unable.open.quitBtn");
+            }
         }
     }
 

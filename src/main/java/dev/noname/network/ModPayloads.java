@@ -1,12 +1,14 @@
 package dev.noname.network;
 
 import dev.noname.NonameEvents;
+import dev.noname.client.KeepInventoryPromptOverlay;
 import dev.noname.client.WarningOverlay;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.GameRules;
 
 /**
  * Registers the mod's custom payloads. Types are registered on both sides
@@ -23,7 +25,9 @@ public final class ModPayloads {
     public static void registerCommon() {
         PayloadTypeRegistry.playS2C().register(NonameEventPayload.TYPE, NonameEventPayload.STREAM_CODEC);
         PayloadTypeRegistry.playS2C().register(ShowWarningPayload.TYPE, ShowWarningPayload.STREAM_CODEC);
+        PayloadTypeRegistry.playS2C().register(ShowKeepInventoryPromptPayload.TYPE, ShowKeepInventoryPromptPayload.STREAM_CODEC);
         PayloadTypeRegistry.playC2S().register(WarningAcknowledgedPayload.TYPE, WarningAcknowledgedPayload.STREAM_CODEC);
+        PayloadTypeRegistry.playC2S().register(KeepInventoryPromptResponsePayload.TYPE, KeepInventoryPromptResponsePayload.STREAM_CODEC);
     }
 
     /** Registers the receiving handlers (client side only). */
@@ -37,6 +41,11 @@ public final class ModPayloads {
             Minecraft mc = context.client();
             mc.execute(WarningOverlay::show);
         });
+
+        ClientPlayNetworking.registerGlobalReceiver(ShowKeepInventoryPromptPayload.TYPE, (payload, context) -> {
+            Minecraft mc = context.client();
+            mc.execute(KeepInventoryPromptOverlay::show);
+        });
     }
 
     /** Registers the receiving handlers (server side only). */
@@ -47,6 +56,19 @@ public final class ModPayloads {
                 var data = player.level().getServer().overworld().getDataStorage().computeIfAbsent(
                         dev.noname.NonameSavedData.factory(), dev.noname.NonameSavedData.ID);
                 data.markWarningShown();
+                dev.noname.JoinMessageHandler.maybeSendKeepInventoryPrompt(player, data);
+            });
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(KeepInventoryPromptResponsePayload.TYPE, (payload, context) -> {
+            ServerPlayer player = context.player();
+            player.getServer().execute(() -> {
+                var data = player.level().getServer().overworld().getDataStorage().computeIfAbsent(
+                        dev.noname.NonameSavedData.factory(), dev.noname.NonameSavedData.ID);
+                data.markKeepInventoryPromptShown();
+                if (payload.enable()) {
+                    player.level().getGameRules().getRule(GameRules.RULE_KEEPINVENTORY).set(true, player.getServer());
+                }
             });
         });
     }
@@ -56,8 +78,18 @@ public final class ModPayloads {
         ServerPlayNetworking.send(player, ShowWarningPayload.create());
     }
 
+    /** Sends the keep-inventory prompt payload to a specific player (server side). */
+    public static void sendShowKeepInventoryPrompt(ServerPlayer player) {
+        ServerPlayNetworking.send(player, ShowKeepInventoryPromptPayload.create());
+    }
+
     /** Sends the warning-acknowledged payload to the server (client side). */
     public static void sendWarningAcknowledged() {
         ClientPlayNetworking.send(WarningAcknowledgedPayload.create());
+    }
+
+    /** Sends the keep-inventory prompt answer to the server (client side). */
+    public static void sendKeepInventoryPromptResponse(boolean enable) {
+        ClientPlayNetworking.send(KeepInventoryPromptResponsePayload.create(enable));
     }
 }

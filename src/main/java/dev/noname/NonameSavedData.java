@@ -21,9 +21,11 @@ public final class NonameSavedData extends SavedData {
 
     private static final String TAG_GHOST_LINES_SENT = "GhostLinesSent";
     private static final String TAG_WARNING_SHOWN = "WarningShown";
+    private static final String TAG_KEEP_INVENTORY_PROMPT_SHOWN = "KeepInventoryPromptShown";
 
     private int ghostLinesSent;
     private boolean warningShown;
+    private boolean keepInventoryPromptShown;
 
     private NonameSavedData() {
     }
@@ -40,6 +42,7 @@ public final class NonameSavedData extends SavedData {
         NonameSavedData data = new NonameSavedData();
         data.ghostLinesSent = tag.getInt(TAG_GHOST_LINES_SENT);
         data.warningShown = tag.getBoolean(TAG_WARNING_SHOWN);
+        data.keepInventoryPromptShown = tag.getBoolean(TAG_KEEP_INVENTORY_PROMPT_SHOWN);
         return data;
     }
 
@@ -71,10 +74,24 @@ public final class NonameSavedData extends SavedData {
         }
     }
 
+    /** {@return true if the keep-inventory prompt has already been shown} */
+    public boolean isKeepInventoryPromptShown() {
+        return keepInventoryPromptShown;
+    }
+
+    /** Marks the keep-inventory prompt as shown and saves. */
+    public void markKeepInventoryPromptShown() {
+        if (!keepInventoryPromptShown) {
+            keepInventoryPromptShown = true;
+            setDirty();
+        }
+    }
+
     @Override
     public CompoundTag save(CompoundTag tag, HolderLookup.Provider provider) {
         tag.putInt(TAG_GHOST_LINES_SENT, ghostLinesSent);
         tag.putBoolean(TAG_WARNING_SHOWN, warningShown);
+        tag.putBoolean(TAG_KEEP_INVENTORY_PROMPT_SHOWN, keepInventoryPromptShown);
         return tag;
     }
 }

@@ -175,6 +175,9 @@ public final class Day5PigHandler {
             Pig pig = new Pig(EntityType.PIG, level);
             pig.moveTo(inFront.x, inFront.y, inFront.z, player.getYRot(), 0.0F);
             tagInfected(pig);
+            // The natural-spawn gate would refuse a non-deliberate mob from
+            // day 9 on, so mark this one as a deliberate spawn first.
+            HostileSpawnTracker.markDeliberate(pig, true);
             level.addFreshEntity(pig);
         }
     }

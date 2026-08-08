@@ -2,6 +2,7 @@
   "itemGroup.noname": "Noname",
   "error.unable.open.lanBtn": "error.unable.open.lanBtn",
   "error.unable.open.multiplayerBtn": "error.unable.open.multiplayerBtn",
+  "error.unable.open.quitBtn": "error.unable.open.quitBtn",
   "error.unable.sleep": "An error occurred while trying to call Bed.sleep() function",
   "item.noname.knife": "Knife",
   "item.noname.dot": ".",
@@ -11,6 +12,8 @@
   "block.noname.blood_flesh_block": "Blood Flesh Block",
   "death.attack.noname.unknown": "%1$s was killed by unknown",
   "death.attack.noname.friend": "%1$s was killed by friend",
+  "death.attack.noname.err_noname": "%1$s died by err.noname",
+  "death.attack.noname.err_noname.player": "%1$s died while trying to run from %2$s",
   "subtitles.noname.it_hurts_to_see": "It hurts to see",
   "subtitles.noname.creepy_bass": "Creepy bass ambience",
   "subtitles.noname.he_is_here": "He is here",
@@ -22,5 +25,9 @@
   "noname.warning.line2": "Player discretion is advised.",
   "noname.warning.line3": "This is a slow-burn mod — events escalate gradually",
   "noname.warning.line4": "over many in-game days, getting worse and worse.",
-  "noname.warning.understand": "I Understand"
+  "noname.warning.understand": "I Understand",
+  "noname.keepinventory.title": "Recommended: Keep Inventory",
+  "noname.keepinventory.line": "keepInventory is off. Enabling it is recommended for a better experience.",
+  "noname.keepinventory.yes": "Yes, enable it (Recommended)",
+  "noname.keepinventory.no": "No, thanks"
 }

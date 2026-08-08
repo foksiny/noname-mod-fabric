@@ -15,22 +15,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * Swings the camera behind the player during the day-10+ lag event. Runs at
  * the end of {@code Camera.setup}, after the rotation was applied, so the
  * pose from {@link Day10LookClient} wins over the default camera logic.
+ * The rotation is re-applied through {@code setRotation} so the derived
+ * rotation quaternion (which the renderer actually consumes) is recomputed.
  */
 @Mixin(Camera.class)
 public abstract class Day10LookCameraMixin {
 
     @Shadow
-    private float yRot;
-
-    @Shadow
-    private float xRot;
+    protected abstract void setRotation(float yRot, float xRot);
 
     @Inject(method = "setup", at = @At("TAIL"))
     private void noname$applyDay10Look(BlockGetter blockGetter, Entity entity, boolean bl, boolean bl2, float f, CallbackInfo ci) {
         Day10LookClient.CameraPose pose = new Day10LookClient.CameraPose();
         if (Day10LookClient.applyCamera(pose)) {
-            this.yRot = pose.yaw();
-            this.xRot = pose.pitch();
+            this.setRotation(pose.yaw(), pose.pitch());
         }
     }
 }

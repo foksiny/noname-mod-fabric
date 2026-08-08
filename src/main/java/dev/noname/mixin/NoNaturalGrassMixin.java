@@ -10,12 +10,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Stops short grass, tall grass and sweet berry bushes from ever generating
- * naturally: every block a worldgen feature places funnels into
- * {@code WorldGenRegion.setBlock} — grass patches, vegetation patches,
- * structure templates, all of it — so cancelling it there removes all three
- * from chunk decoration. Only new chunks are affected: existing grass stays,
- * and players can still place these blocks themselves.
+ * Stops short grass, tall grass, ferns, large ferns and sweet berry bushes
+ * from ever generating naturally: every block a worldgen feature places
+ * funnels into {@code WorldGenRegion.setBlock} — grass patches, vegetation
+ * patches, structure templates, all of it — so cancelling it there removes
+ * them all from chunk decoration. Only new chunks are affected: existing
+ * grass stays, and players can still place these blocks themselves.
  */
 @Mixin(WorldGenRegion.class)
 public abstract class NoNaturalGrassMixin {
@@ -24,6 +24,7 @@ public abstract class NoNaturalGrassMixin {
     private void noname$noNaturalGrass(BlockPos pos, BlockState state, int flags, int recursionLeft,
                                        CallbackInfoReturnable<Boolean> cir) {
         if (state.is(Blocks.SHORT_GRASS) || state.is(Blocks.TALL_GRASS)
+                || state.is(Blocks.FERN) || state.is(Blocks.LARGE_FERN)
                 || state.is(Blocks.SWEET_BERRY_BUSH)) {
             cir.setReturnValue(false);
         }
