@@ -17,7 +17,7 @@ import net.minecraft.world.item.Items;
  * foot, eggs, ink sacs, raw cod / salmon. Hostile-mob loot (rotten flesh,
  * bones, string, arrows, gunpowder, …) is deliberately never spawned.
  *
- * <p>From day 9 onward the world goes empty of natural mobs
+ * <p>From day 9 to day 15 the world goes empty of natural mobs
  * ({@code natural_spawn_stop}), so the loot becomes the player's food
  * source: piles spawn twice as often and 75% of the time are actually
  * edible — cooked and raw meats, bread, apples and eggs.

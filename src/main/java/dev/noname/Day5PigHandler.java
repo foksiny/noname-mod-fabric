@@ -156,7 +156,8 @@ public final class Day5PigHandler {
                 new ItemStack(ModBlocks.FLESH_BLOCK, count)));
 
         // 25% chance to spawn the fake player.
-        if (level.random.nextFloat() >= ModConfig.chance("day5_pig", FAKE_PLAYER_CHANCE)) return;
+        if (level.random.nextFloat()
+                >= ModConfig.chance("day5_pig", BloodyNightHandler.boost(FAKE_PLAYER_CHANCE, level))) return;
         if (killer == null) return;
 
         spawnFakePlayerApparition(level, pig, killer, level.getServer());

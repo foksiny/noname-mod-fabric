@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Random;
 
 /**
- * The "No Name 0.2.0 beta" version string pinned to the top-right corner of
+ * The "No Name 0.3.0 beta" version string pinned to the top-right corner of
  * the main menu. Most of the time it sits there quietly, but roughly every
  * one to two seconds it stutters and corrupts for a few frames, as if the
  * game is struggling to render it: the text tears into horizontal bands that
@@ -29,7 +29,7 @@ import java.util.Random;
 @Mixin(TitleScreen.class)
 public abstract class TitleScreenVersionMixin {
 
-    private static final String VERSION_TEXT = "No Name 0.2.0 beta";
+    private static final String VERSION_TEXT = "No Name 0.3.0 beta";
 
     /** Time a "lag tick" takes: offsets are held for this long instead of
      *  being re-rolled every frame, which reads as choppy, delayed input. */

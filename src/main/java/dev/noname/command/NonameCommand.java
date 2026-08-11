@@ -57,6 +57,7 @@ public final class NonameCommand {
             "day4_hungry",       // day-4 25%: fake line + cave sound + darkness + hunger 0
             "day4_red_pink",     // day-4 50%: fake line + flesh block
             "day4_help",         // client: "help me" window pops up
+            "day4_lightning",     // day-4+: visual lightning strikes each player, sets them on fire (no bolt damage)
             "blood_death",       // tearing sound + blood burst at each player
             "hostile_clear",     // hostile mobs near each player vanish
             "flesh_tree",        // grow one flesh tree next to each player
@@ -67,10 +68,12 @@ public final class NonameCommand {
             "day3_timeskip",     // day-3 midday -> sudden jump to night (19:00)
             "day3_stalker",      // day-3+: fake player flickers in front of you, laggy1 blast + darkness II
             "day2_null_join",    // day-2 midday -> "null" joins, sorry chat, then leaves
+            "block_blink",       // day-8+: 30% of the blocks in a 16x16x16 cube around each player blink out, then back
             "day6_static",       // day-6 midday -> static overlay + text sequence
             "day10_look",        // day-10+ lag event: look behind + fake player
             "camera_spasm",      // day-1+: camera whips to random directions for 1 s
             "day10_whisper",     // client: ghost's texts whispered on screen (day 10+)
+            "day10_question",    // day-10 start: "do you like meat" window (half-heart damage vs halved max hearts + kick + rejoin punishment)
             "day11_chest",       // day-11+ mystery chest above an oak plank
             "day5_pig",          // spawn an infected pig in front of each player
             "he_is_here",        // "." secret event: the friend runs at you
@@ -81,7 +84,12 @@ public final class NonameCommand {
             "chunk_delete",      // day-13+: 25% per 3-6 min deletes a chunk 7-13 chunks ahead (void)
             "day13_stalker",     // day-13+: fake player stalks you from behind (37% per 4-9 min)
             "day14_death",       // day-14+: random lightning death (15% per 4-9 min)
+            "item_thief",        // day-15+: item stolen from inventory (10% per 3-7 min), desktop popup
+            "door_ambush",       // day-15+: 5% per door open — freeze 5 s, zoom, darkness, footsteps from behind, then a hit
             "day8_smile",        // day-8 start -> client: ":)" window pops up + " .txt" written to the desktop
+            "sun_glitch",        // day-11+: the sun starts to lag, stutter and corrupt (forces the day-25 state)
+            "animal_revenge",    // day-16+: every non-hostile mob near each player turns on them (1-heart hits)
+            "world_infection",   // day-17+: infected blocks creep out from each player's bed (15 blocks), faster each day
     };
 
     private static final int BAR_LENGTH = 20;
@@ -183,7 +191,9 @@ public final class NonameCommand {
         addGate(sb, day, 1, Long.MAX_VALUE, "hostile mobs stopped", "day 1+");
         addGate(sb, day, 1, Long.MAX_VALUE, "classic (alpha) textures & sounds", "always");
         addGate(sb, day, 1, Long.MAX_VALUE, "villages & golems removed", "day 1+");
-        addGate(sb, day, 9, Long.MAX_VALUE, "natural mob spawns stopped", "day 9+");
+        addGate(sb, day, 9, 15, "natural mob spawns stopped", "days 9-15");
+        addGate(sb, day, 16, Long.MAX_VALUE, "animals fight back (1 heart per hit)", "day 16+");
+        addGate(sb, day, 17, Long.MAX_VALUE, "world infection spreads (infected blocks)", "day 17+");
         addGate(sb, day, 9, Long.MAX_VALUE, "loot piles 2x as often, mostly edible", "day 9+");
         addGate(sb, day, 1, Long.MAX_VALUE, "camera spasm (18% per 3-6 min)", "day 1+");
         addGate(sb, day, 2, 2, "sleeping blocked", "day 2");
@@ -216,9 +226,11 @@ public final class NonameCommand {
         addGate(sb, day, 10, Long.MAX_VALUE, "lag event: look behind, fake player (30% per 3-6 min)", "day 10+");
         addGate(sb, day, 10, Long.MAX_VALUE, "screen whispers (15% per 4-8 min, client)", "day 10+");
         addGate(sb, day, 11, Long.MAX_VALUE, "mystery chests (5% per 2-4 min)", "day 11+");
+        addGate(sb, day, 11, Long.MAX_VALUE, "sun starts to glitch (laggy, stuttery, corrupting)", "day 11+");
         addGate(sb, day, 13, Long.MAX_VALUE, "chunk deletion ahead of you (25% per 3-6 min)", "day 13+");
         addGate(sb, day, 13, Long.MAX_VALUE, "fake player stalks you (37% per 4-9 min)", "day 13+");
         addGate(sb, day, 14, Long.MAX_VALUE, "random lightning death (15% per 4-9 min)", "day 14+");
+        addGate(sb, day, 15, Long.MAX_VALUE, "door ambush (5% per door open: freeze, zoom, footsteps, hit)", "day 15+");
         addGate(sb, day, 8, Long.MAX_VALUE, "meat drops (5% per kill)", "day 8+");
         addGate(sb, day, 8, Long.MAX_VALUE, "cave stalker zombie (35% per 1-1.5 min in caves)", "day 8+");
         addGate(sb, day, 4, Long.MAX_VALUE, "craft infinite knife (meat + knife)", "day 4+");

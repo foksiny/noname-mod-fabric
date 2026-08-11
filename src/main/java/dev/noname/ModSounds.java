@@ -122,6 +122,13 @@ public final class ModSounds {
      */
     public static final SoundEvent DOOR_KNOCK = createSoundEvent("door_knock");
 
+    /**
+     * "Cross" — the user's {@code cross.ogg}: the energy-charge hum that
+     * plays at the player the moment the Cross locks onto an apparition and
+     * starts its 0.7 second charge.
+     */
+    public static final SoundEvent CROSS = createSoundEvent("cross");
+
     private ModSounds() {
     }
 
@@ -143,6 +150,7 @@ public final class ModSounds {
         registerSoundEvent(DAY6_LAUGHS);
         registerSoundEvent(DO_YOU_SEE_ME);
         registerSoundEvent(DOOR_KNOCK);
+        registerSoundEvent(CROSS);
     }
 
     private static SoundEvent createSoundEvent(String name) {

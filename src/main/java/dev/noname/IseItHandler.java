@@ -138,6 +138,12 @@ public final class IseItHandler {
             entity.setYRot(yaw);
             entity.setYHeadRot(yaw);
 
+            // Pinned by the Cross: hold perfectly still — no glitch, no
+            // chase, no contact damage — until the charge completes.
+            if (entity.isStopped(now)) {
+                continue;
+            }
+
             // The first time the player looks at it, it starts moving.
             if (!entity.isChasing() && isLookingAt(target, entity)) {
                 entity.setChasing(true);
@@ -176,6 +182,13 @@ public final class IseItHandler {
             entity.discard();
         }
         entities.clear();
+    }
+
+    /** Removes the given apparition from the world and the active list for
+     *  good — used by {@link CrossItem} when the Cross destroys "ise it". */
+    public static void removeEntity(IseItEntity entity) {
+        entities.remove(entity);
+        entity.discard();
     }
 
     /** Spawns one apparition exactly 15 blocks away from each real player. */

@@ -380,7 +380,8 @@ public final class Day13StalkerHandler {
             }
             ticksUntilRoll.put(player.getUUID(), MIN_ROLL_TICKS
                     + overworld.getRandom().nextInt(MAX_ROLL_TICKS - MIN_ROLL_TICKS + 1));
-            if (overworld.getRandom().nextFloat() < ModConfig.chance("day13_stalker", EVENT_CHANCE)) {
+            if (overworld.getRandom().nextFloat()
+                    < ModConfig.chance("day13_stalker", BloodyNightHandler.boost(EVENT_CHANCE, overworld))) {
                 triggerForPlayer(server, player);
             }
         }
@@ -397,6 +398,13 @@ public final class Day13StalkerHandler {
         if (!fake.isAlive() || fake.level() != level) {
             fake.discard();
             return false;
+        }
+
+        // Pinned by the Cross: hold still — no catch, no hunt, no movement —
+        // until the charge completes.
+        if (CrossItem.isStopped(fake)) {
+            CrossItem.pin(fake);
+            return true;
         }
 
         // The server only drives the full player tick chain (gravity,
@@ -1302,6 +1310,20 @@ public final class Day13StalkerHandler {
         }
         stalkers.clear();
         ticksUntilRoll.clear();
+    }
+
+    /** Destroys the given stalker with the Cross and ends its hunt.
+     *  {@return whether this handler owned the stalker} */
+    public static boolean destroyStalker(ServerPlayer fake) {
+        for (var it = stalkers.entrySet().iterator(); it.hasNext(); ) {
+            var entry = it.next();
+            if (entry.getValue().fake == fake) {
+                it.remove();
+                fake.discard();
+                return true;
+            }
+        }
+        return false;
     }
 
     /** Points the stalker's whole body (yRot plus the model's head and body

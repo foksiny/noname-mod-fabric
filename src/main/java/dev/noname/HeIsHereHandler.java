@@ -167,6 +167,13 @@ public final class HeIsHereHandler {
                 continue;
             }
 
+            // Pinned by the Cross: the friend cannot move, catch anyone or
+            // end the event on its own — until the charge completes.
+            if (chase.friend != null && CrossItem.isStopped(chase.friend)) {
+                CrossItem.pin(chase.friend);
+                continue;
+            }
+
             // Second 13: the darkness and the friend appear.
             if (!chase.spawned && now - chase.startedAtTick >= CHASE_START_TICKS) {
                 chase.spawned = true;
@@ -300,6 +307,29 @@ public final class HeIsHereHandler {
             friend.discard();
             chase.friend = null;
         }
+    }
+
+    /** Destroys the friend with the Cross: the event ends, the victim's
+     *  client stops the song and the tab entry is removed.
+     *  {@return whether this handler owned the friend} */
+    public static boolean destroyFriend(ServerPlayer friend) {
+        for (var it = chases.entrySet().iterator(); it.hasNext(); ) {
+            Chase chase = it.next().getValue();
+            if (chase.friend == friend) {
+                it.remove();
+                if (chases.isEmpty()) {
+                    EventQueue.release("he_is_here");
+                }
+                ServerPlayer victim = friend.level().getServer()
+                        .getPlayerList().getPlayer(chase.player.getUUID());
+                if (victim != null) {
+                    ServerPlayNetworking.send(victim, NonameEventPayload.play("he_is_here:stop"));
+                }
+                discardFriend(chase);
+                return true;
+            }
+        }
+        return false;
     }
 
     /** {@return the yaw that makes {@code friend} face {@code player}} */

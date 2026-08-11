@@ -42,6 +42,18 @@ public final class ModBlocks {
             .sound(SoundType.SLIME_BLOCK)
             .friction(0.8F));
 
+    /**
+     * The Infected Block: a rotting bruised-purple block with green veins
+     * that seeds near each player's bed on day 17 and slowly consumes the
+     * world (see {@link InfectionHandler} and {@link InfectedBlock}). No
+     * item, no creative-tab entry, no drops — it only exists as the
+     * infection itself.
+     */
+    public static final Block INFECTED_BLOCK = new InfectedBlock(BlockBehaviour.Properties.of()
+            .mapColor(MapColor.COLOR_PURPLE)
+            .strength(1.0F)
+            .sound(SoundType.SLIME_BLOCK));
+
     private ModBlocks() {
     }
 
@@ -59,5 +71,10 @@ public final class ModBlocks {
                 new BlockItem(BLOOD_FLESH_BLOCK, new Item.Properties()));
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.BUILDING_BLOCKS)
                 .register(entries -> entries.accept(BLOOD_FLESH_BLOCK));
+
+        // The infected block deliberately has no item and no creative-tab
+        // entry: it is placed by the infection itself, never by the player.
+        ResourceLocation infectedId = ResourceLocation.fromNamespaceAndPath(Noname.MODID, "infected_block");
+        Registry.register(BuiltInRegistries.BLOCK, infectedId, INFECTED_BLOCK);
     }
 }

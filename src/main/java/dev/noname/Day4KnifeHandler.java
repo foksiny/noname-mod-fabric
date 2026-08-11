@@ -379,8 +379,9 @@ public final class Day4KnifeHandler {
 
     /** {@return the horizontal facing unit vector for a yaw in degrees, in
      *  vanilla's convention (yaw 0 = +Z, turning left rotates counterclock-
-     *  wise when seen from above)} */
-    private static Vec3 facing(float yRot) {
+     *  wise when seen from above)} Shared with the day-10 question handler's
+     *  sign placement. */
+    static Vec3 facing(float yRot) {
         double rad = Math.toRadians(yRot);
         return new Vec3(-Math.sin(rad), 0.0D, Math.cos(rad));
     }

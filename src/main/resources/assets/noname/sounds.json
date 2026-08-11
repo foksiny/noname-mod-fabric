@@ -104,6 +104,13 @@
       { "name": "noname:day6_laughs/day6_laughs", "stream": false }
     ]
   },
+  "cross": {
+    "category": "players",
+    "subtitle": "subtitles.noname.cross",
+    "sounds": [
+      { "name": "noname:cross/cross", "stream": false }
+    ]
+  },
   "door_knock": {
     "category": "ambient",
     "subtitle": "subtitles.noname.door_knock",

@@ -113,7 +113,8 @@ public final class Day3StalkerHandler {
             }
             ticksUntilRoll.put(player.getUUID(), MIN_ROLL_TICKS
                     + overworld.getRandom().nextInt(MAX_ROLL_TICKS - MIN_ROLL_TICKS + 1));
-            if (overworld.getRandom().nextFloat() < ModConfig.chance("day3_stalker", EVENT_CHANCE)) {
+            if (overworld.getRandom().nextFloat()
+                    < ModConfig.chance("day3_stalker", BloodyNightHandler.boost(EVENT_CHANCE, overworld))) {
                 triggerForPlayer(server, player);
             }
         }
@@ -140,6 +141,22 @@ public final class Day3StalkerHandler {
         apparitions.clear();
         removeAtTick.clear();
         ticksUntilRoll.clear();
+    }
+
+    /** Destroys the given apparition with the Cross and removes it from
+     *  every bookkeeping map. {@return whether this handler owned the
+     *  apparition} */
+    public static boolean destroyApparition(ServerPlayer fake) {
+        for (var it = apparitions.entrySet().iterator(); it.hasNext(); ) {
+            var entry = it.next();
+            if (entry.getValue() == fake) {
+                it.remove();
+                removeAtTick.remove(entry.getKey());
+                fake.discard();
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void triggerForPlayer(MinecraftServer server, ServerPlayer player) {

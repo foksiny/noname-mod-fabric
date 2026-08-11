@@ -49,7 +49,9 @@ public final class NonameClient implements ClientModInitializer {
         ClientTickEvents.START_CLIENT_TICK.register(CameraSpasmClient::onClientTick);
         ClientTickEvents.START_CLIENT_TICK.register(StalkerDarknessHandler::onClientTick);
         ClientTickEvents.START_CLIENT_TICK.register(StalkerStaticHandler::onClientTick);
+        ClientTickEvents.START_CLIENT_TICK.register(DoorAmbushClient::onClientTick);
         ClientTickEvents.START_CLIENT_TICK.register(Day5DesktopClient::onClientTick);
+        ClientTickEvents.START_CLIENT_TICK.register(BloodyNightClient::onClientTick);
 
         HudRenderCallback.EVENT.register(Day2CreepOverlay::onHudRender);
         HudRenderCallback.EVENT.register(Day5FlashOverlay::onHudRender);

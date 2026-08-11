@@ -26,6 +26,9 @@ public class IseItEntity extends Entity {
     private int nextJitterInterval;
     private long lastAttackTick;
     private boolean chasing;
+    /** Server tick before which the entity must not move or attack — set by
+     *  {@link CrossItem} while the Cross drains it. */
+    private long stoppedUntilTick;
 
     public IseItEntity(EntityType<?> type, Level level) {
         super(type, level);
@@ -91,5 +94,18 @@ public class IseItEntity extends Entity {
 
     public void setChasing(boolean chasing) {
         this.chasing = chasing;
+    }
+
+    public long getStoppedUntilTick() {
+        return stoppedUntilTick;
+    }
+
+    public void setStoppedUntilTick(long stoppedUntilTick) {
+        this.stoppedUntilTick = stoppedUntilTick;
+    }
+
+    /** {@return whether the entity is currently pinned by the Cross} */
+    public boolean isStopped(long now) {
+        return now < stoppedUntilTick;
     }
 }

@@ -6,7 +6,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -66,5 +68,29 @@ public final class PlayerPlacedBlocks {
         BlockState recorded = byLevel.get(pos.asLong());
         return recorded != null
                 && level.getBlockState(pos).getBlock() == recorded.getBlock();
+    }
+
+    /**
+     * {@return every recorded player-placed position within {@code radius}
+     * blocks (horizontally) of {@code center} in {@code level}'s dimension}
+     * Positions whose block no longer matches what was recorded can be
+     * filtered by the caller with {@link #isPlaced}.
+     */
+    public static List<BlockPos> placedWithin(ServerLevel level, BlockPos center, double radius) {
+        Map<Long, BlockState> byLevel = PLACED.get(level.dimension());
+        if (byLevel == null || byLevel.isEmpty()) {
+            return List.of();
+        }
+        double radiusSq = radius * radius;
+        List<BlockPos> result = new ArrayList<>();
+        for (Long key : byLevel.keySet()) {
+            BlockPos pos = BlockPos.of(key);
+            long offX = pos.getX() - center.getX();
+            long offZ = pos.getZ() - center.getZ();
+            if (offX * offX + offZ * offZ <= radiusSq) {
+                result.add(pos);
+            }
+        }
+        return result;
     }
 }

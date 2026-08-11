@@ -9,11 +9,15 @@ import dev.noname.client.Day5FlashHandler;
 import dev.noname.client.Day6Handler;
 import dev.noname.client.Day8SkyHandler;
 import dev.noname.client.Day10LookClient;
+import dev.noname.client.DoorAmbushClient;
 import dev.noname.client.CameraSpasmClient;
 import dev.noname.client.Day10WhisperHandler;
 import dev.noname.client.HeIsHereClient;
+import dev.noname.client.ItemThiefWindow;
+import dev.noname.client.MeatQuestionWindow;
 import dev.noname.client.StalkerDarknessHandler;
 import dev.noname.client.StalkerStaticHandler;
+import dev.noname.client.SunGlitchHandler;
 import dev.noname.network.NonameEventPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.MinecraftServer;
@@ -69,6 +73,7 @@ public final class NonameEvents {
             case "day2_null_join"  -> Day2NullJoinHandler.triggerNow(server);
             case "day6_static"     -> sendToAllPlayers(server, NonameEventPayload.play("day6_static"));
             case "day10_look"      -> Day10LookHandler.triggerForAllPlayers(server);
+            case "day10_question"  -> Day10MeatQuestionHandler.triggerNow(server);
             case "camera_spasm"    -> CameraSpasmHandler.triggerForAllPlayers(server);
             case "day11_chest"     -> Day11ChestHandler.triggerOneNearEachPlayer(server);
 case "he_is_here" -> HeIsHereHandler.triggerForEachPlayer(server);
@@ -80,11 +85,17 @@ case "he_is_here" -> HeIsHereHandler.triggerForEachPlayer(server);
             case "chunk_delete"  -> ChunkDeletionHandler.triggerForEachPlayer(server);
             case "day13_stalker" -> Day13StalkerHandler.triggerForAllPlayers(server);
             case "day14_death"   -> Day14DeathHandler.triggerForAllPlayers(server);
+            case "item_thief"    -> ItemThiefHandler.triggerForAllPlayers(server);
+            case "door_ambush"   -> DoorAmbushHandler.triggerForAllPlayers(server);
             case "day8_smile"    -> Day8SmileHandler.triggerNow(server);
+            case "block_blink"    -> BlockBlinkHandler.triggerNow(server);
+            case "animal_revenge" -> AnimalRevengeHandler.enrageNearEachPlayer(server);
+            case "world_infection" -> InfectionHandler.triggerForAllPlayers(server);
+            case "day4_lightning" -> Day4LightningHandler.triggerForAllPlayers(server);
 
             // Client-only events: dispatch the play payload to every online player.
             case "creepy_bass", "day2_message", "disc_11", "day5_flash", "day8_sky",
-                    "day4_help", "day10_whisper" ->
+                    "day4_help", "day10_whisper", "sun_glitch" ->
                     sendToAllPlayers(server, NonameEventPayload.play(key));
 
             default -> { /* unknown — the command rejects names before we get here */ }
@@ -116,6 +127,7 @@ case "he_is_here" -> HeIsHereHandler.triggerForEachPlayer(server);
         DoorHandler.stopAll();
         DoorKnockHandler.stopAll();
         Day10LookHandler.stopAll();
+        Day10MeatQuestionHandler.stopAll();
         CameraSpasmHandler.stopAll();
         HeIsHereHandler.stopAll();
         Day5PigHandler.stopAll();
@@ -126,7 +138,14 @@ case "he_is_here" -> HeIsHereHandler.triggerForEachPlayer(server);
         ChunkDeletionHandler.stopAll();
         Day13StalkerHandler.stopAll();
         Day14DeathHandler.stopAll();
+        ItemThiefHandler.stopAll();
+        DoorAmbushHandler.stopAll(server);
         Day8SmileHandler.stopAll();
+        BlockBlinkHandler.stopAll(server);
+        AnimalRevengeHandler.stopAll();
+        InfectionHandler.stopAll();
+        Day4LightningHandler.stopAll();
+        CrossItem.stopAll();
     }
 
     /**
@@ -148,8 +167,11 @@ case "he_is_here" -> HeIsHereHandler.triggerForEachPlayer(server);
             case "day6_static"   -> Day6Handler.triggerNow();
             case "day4_help"     -> Day4HelpPopup.showNow();
             case "day10_look"    -> Day10LookClient.start();
+            case "door_ambush"   -> DoorAmbushClient.start();
+            case "door_ambush_stop" -> DoorAmbushClient.stop();
             case "camera_spasm"  -> CameraSpasmClient.start();
             case "day10_whisper" -> Day10WhisperHandler.triggerNow();
+            case "sun_glitch"    -> SunGlitchHandler.forceNow();
             case "day3_stalker"  -> StalkerDarknessHandler.triggerNow();
             case "day13_stalker" -> StalkerStaticHandler.triggerNow();
             case "day10_look_stop" -> Day10LookClient.stop();
@@ -197,8 +219,12 @@ case "he_is_here" -> HeIsHereHandler.triggerForEachPlayer(server);
         HeIsHereClient.stop();
         StalkerDarknessHandler.stopAll();
         StalkerStaticHandler.stopAll();
+        DoorAmbushClient.stop();
         Day5DesktopClient.stopAll();
         Day8SmileClient.closeWindow();
+        ItemThiefWindow.closeNow();
+        MeatQuestionWindow.closeNow();
+        SunGlitchHandler.stopAll();
     }
 
     private static void sendToAllPlayers(MinecraftServer server, NonameEventPayload payload) {

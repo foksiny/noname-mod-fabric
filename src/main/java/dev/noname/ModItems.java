@@ -67,6 +67,17 @@ public final class ModItems {
      */
     public static final MeatItem MEAT = MeatItem.create();
 
+    /**
+     * The Cross: a craftable anti-apparition tool (planks + redstone, see
+     * {@code data/noname/recipe/cross.json}). While held, any apparition
+     * within 5 blocks (the "ise it" entity or one of the fake players) is
+     * stopped, drained by an energy beam for 0.7 seconds, then destroyed in
+     * a purely visual energy explosion, ending its event. The cross is
+     * consumed in the blast and never stacks (one per slot). Texture:
+     * {@code noname:item/cross}.
+     */
+    public static final Item CROSS = new CrossItem(new Item.Properties().stacksTo(1));
+
     private ModItems() {
     }
 
@@ -92,6 +103,11 @@ public final class ModItems {
         Registry.register(BuiltInRegistries.ITEM, infiniteKnifeId, INFINITE_KNIFE);
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT)
                 .register(entries -> entries.accept(INFINITE_KNIFE));
+
+        ResourceLocation crossId = ResourceLocation.fromNamespaceAndPath(Noname.MODID, "cross");
+        Registry.register(BuiltInRegistries.ITEM, crossId, CROSS);
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
+                .register(entries -> entries.accept(CROSS));
     }
 
     /**

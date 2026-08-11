@@ -78,7 +78,7 @@ public final class ModConfig {
         map.put("ghost_chat",       "Ghost chat dialogue");
         map.put("it_hurts_to_see",  "Ghost \"it hurts to see\" stinger");
         map.put("hostile_stop",     "Day 1+: hostile mobs stopped");
-        map.put("natural_spawn_stop", "Day 9+: natural mob spawns stopped");
+        map.put("natural_spawn_stop", "Day 9-15: natural mob spawns stopped");
         map.put("village_removal",  "Day 1+: villagers & iron golems removed");
         map.put("sleep_block",      "Day 2: sleeping blocked");
         map.put("day2_null_join",   "Day 2: \"null\" visitor");
@@ -90,6 +90,7 @@ public final class ModConfig {
         map.put("day4_hungry",      "Day 4: \"i'm feeling hungry\"");
         map.put("day4_red_pink",    "Day 4: \"really red and pink\"");
         map.put("day4_help",        "Day 4: \"help me\" window");
+        map.put("day4_lightning",   "Day 4+: lightning strike sets you on fire (10% per 3-7 min)");
         map.put("loot_pile",        "Day 4+: animal loot piles (2x, mostly food day 9+)");
         map.put("leafless_trees",   "Day 4+: leafless trees & broken logs");
         map.put("knife_craft",      "Infinite knife recipe (meat + knife)");
@@ -112,22 +113,29 @@ public final class ModConfig {
         map.put("day8_sky",         "Day 8+: red sky");
         map.put("day8_smile",       "Day 8: \":)\" window + \" .txt\" on desktop");
         map.put("cave_zombie",      "Day 8+: cave stalker zombie");
+        map.put("block_blink",      "Day 8+: blocks blink out and back (30% per 2-3 min)");
         map.put("cave_digging",     "Day 8+: cave digging sounds");
         map.put("meat_drops",       "Day 8+: meat drops");
         map.put("sign_place",       "Day 9+: creepy signs");
         map.put("camera_spasm",     "Day 1+: camera spasm (18% per 3-6 min)");
         map.put("day10_look",       "Day 10+: look-behind event");
         map.put("day10_whisper",    "Day 10+: screen whispers");
+        map.put("day10_question",   "Day 10: \"do you like meat\" question (yes/no window)");
         map.put("red_rain",         "Day 10+: red rain");
         map.put("day11_chest",      "Day 11+: mystery chests");
         map.put("chunk_delete",     "Day 13+: chunk ahead of you deleted (void)");
         map.put("day13_stalker",    "Day 13+: fake player stalks you (37% per 4-9 min)");
         map.put("day14_death",       "Day 14+: random lightning death (15% per 4-9 min)");
+        map.put("item_thief",       "Day 15+: items taken from your inventory (10% per 3-7 min)");
+        map.put("door_ambush",      "Day 15+: door ambush (5% per door open: freeze, zoom, footsteps, hit)");
         map.put("chat_block",        "Day 15+: chat can no longer be opened (keys do nothing)");
+        map.put("animal_revenge",    "Day 16+: animals fight back (1 heart per hit)");
+        map.put("world_infection",   "Day 17: the world infection spreads from your bed (infected blocks)");
         map.put("he_is_here",       "Secret: \"he is here\" chase");
         map.put("scrambled_names",  "Scrambled item names");
         map.put("cave_sounds",      "Cave ambience sounds");
         map.put("moon_infection",   "Moon infection");
+        map.put("sun_glitch",       "Day 11+: the sun starts to glitch");
         return Collections.unmodifiableMap(map);
     }
 

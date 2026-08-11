@@ -1,5 +1,6 @@
 package dev.noname.mixin;
 
+import dev.noname.client.BloodyNightClient;
 import dev.noname.client.Day8SkyHandler;
 import dev.noname.client.HeIsHereClient;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -26,6 +27,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * fog red and pull it closer proportionally to how close the friend is
  * ({@link HeIsHereClient#intensity()}): a strong red fog that gets stronger
  * as the fake player approaches.
+ *
+ * <p>On a Bloody Night (day 15+), the colour hook alone pulls the fog toward
+ * a dark blood-red, driven by {@link BloodyNightClient#intensity()} — a
+ * subtle tint over the regular night fog, without the heavy distance clamp.
  */
 @Mixin(FogRenderer.class)
 public abstract class FogColorMixin {
@@ -41,6 +46,15 @@ public abstract class FogColorMixin {
     private static final float TARGET_RED = 0.9F;
     private static final float TARGET_GREEN = 0.04F;
     private static final float TARGET_BLUE = 0.04F;
+
+    /** How strongly the fog is pulled toward the Bloody-Night colour: a
+     *  visible but dark tint, far weaker than the event fogs above. */
+    private static final float BLOODY_BLEND = 0.45F;
+
+    /** The dark blood-red the fog is pulled toward on a Bloody Night. */
+    private static final float BLOODY_TARGET_RED = 0.32F;
+    private static final float BLOODY_TARGET_GREEN = 0.02F;
+    private static final float BLOODY_TARGET_BLUE = 0.02F;
 
     /** Minimum red-fog strength during the "he is here" chase: even at 150
      *  blocks away there is a strong red haze, growing to ~1 as the friend
@@ -80,6 +94,14 @@ public abstract class FogColorMixin {
             fogGreen = Mth.lerp(strength, fogGreen, TARGET_GREEN);
             fogBlue = Mth.lerp(strength, fogBlue, TARGET_BLUE);
             return;
+        }
+        if (BloodyNightClient.isActive()) {
+            // A subtle dark-red haze over the whole night — far weaker than
+            // the event fogs above, but clearly visible.
+            float strength = BLOODY_BLEND * BloodyNightClient.intensity();
+            fogRed = Mth.lerp(strength, fogRed, BLOODY_TARGET_RED);
+            fogGreen = Mth.lerp(strength, fogGreen, BLOODY_TARGET_GREEN);
+            fogBlue = Mth.lerp(strength, fogBlue, BLOODY_TARGET_BLUE);
         }
     }
 

@@ -163,7 +163,8 @@ public final class Day10LookHandler {
             }
             ticksUntilRoll.put(player.getUUID(), MIN_ROLL_TICKS
                     + overworld.getRandom().nextInt(MAX_ROLL_TICKS - MIN_ROLL_TICKS + 1));
-            if (overworld.getRandom().nextFloat() < ModConfig.chance("day10_look", EVENT_CHANCE)) {
+            if (overworld.getRandom().nextFloat()
+                    < ModConfig.chance("day10_look", BloodyNightHandler.boost(EVENT_CHANCE, overworld))) {
                 // Player rolled successfully - add to pending list
                 if (!pendingPlayers.contains(player.getUUID())) {
                     pendingPlayers.add(player.getUUID());
@@ -221,6 +222,33 @@ public final class Day10LookHandler {
         ticksUntilRoll.clear();
         pendingPlayers.clear();
         EventQueue.release("day10_look");
+    }
+
+    /** Destroys the given apparition with the Cross: removes it, unfreezes
+     *  its victim immediately and cancels the end-of-event hit (the client
+     *  camera is restored via the {@code day10_look_stop} payload).
+     *  {@return whether this handler owned the apparition} */
+    public static boolean destroyApparition(ServerPlayer fake) {
+        for (var it = apparitions.entrySet().iterator(); it.hasNext(); ) {
+            var entry = it.next();
+            if (entry.getValue() == fake) {
+                UUID victimUuid = entry.getKey();
+                it.remove();
+                fakeRemoveAtTick.remove(victimUuid);
+                unfreezeAtTick.remove(victimUuid);
+                frozen.remove(victimUuid);
+                pendingPlayers.remove(victimUuid);
+                fake.discard();
+                MinecraftServer server = ((ServerLevel) fake.level()).getServer();
+                ServerPlayer victim = server.getPlayerList().getPlayer(victimUuid);
+                if (victim != null) {
+                    ServerPlayNetworking.send(victim, NonameEventPayload.play("day10_look_stop"));
+                }
+                EventQueue.release("day10_look");
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void triggerForPlayer(MinecraftServer server, ServerPlayer player) {

@@ -23,9 +23,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * the mob to the world anyway.
  *
  * <p>Hostile mobs are marked from day 1 on (the hostile-mob gate); all
- * other categories are marked from day 9 on (the natural-spawn gate), so
- * spawn-egg and {@code /summon} animals keep working after the world goes
- * empty.
+ * other categories are marked only while the natural-spawn gate is active
+ * (days 9-15), so spawn-egg and {@code /summon} animals keep working while
+ * the world is empty.
  */
 @Mixin(Mob.class)
 public abstract class MobSpawnMixin {
@@ -43,9 +43,15 @@ public abstract class MobSpawnMixin {
             if (!ModConfig.isEnabled("hostile_stop")) {
                 return;
             }
-        } else if (!ModConfig.isEnabled("natural_spawn_stop")) {
-            // Nothing to mark when the natural-spawn block is switched off.
-            return;
+        } else {
+            // Nothing to mark when the natural-spawn block is switched off
+            // or not currently active (it only runs on days 9-15).
+            long day = DayCounter.currentDay(level);
+            if (!ModConfig.isEnabled("natural_spawn_stop")
+                    || day < ModConfig.scaledDay(9)
+                    || day >= ModConfig.scaledDay(16)) {
+                return;
+            }
         }
         HostileSpawnTracker.markDeliberate(self,
                 spawnType == MobSpawnType.SPAWN_EGG

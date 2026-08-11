@@ -15,7 +15,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * Blocks the mobs that structure templates place during chunk generation
  * (dungeon features, pillager outposts, ...): WorldGenRegion has its own
  * {@code addFreshEntity}. Same gates as {@link HostileSpawnGateMixin} — day
- * 1 onward no hostile mobs, day 9 onward no natural mobs at all, enter newly
+ * 1 onward no hostile mobs, days 9-15 no natural mobs at all (they return
+ * on day 16), enter newly
  * generated chunks.
  */
 @Mixin(net.minecraft.server.level.WorldGenRegion.class)
@@ -35,9 +36,10 @@ public abstract class HostileWorldGenGateMixin {
                 return;
             }
         } else {
-            // From day 9 on, newly generated chunks carry no natural mobs
-            // either.
-            if (day < ModConfig.scaledDay(9) || !ModConfig.isEnabled("natural_spawn_stop")) {
+            // From day 9 to day 15, newly generated chunks carry no natural
+            // mobs either; from day 16 on they spawn normally again.
+            if (day < ModConfig.scaledDay(9) || day >= ModConfig.scaledDay(16)
+                    || !ModConfig.isEnabled("natural_spawn_stop")) {
                 return;
             }
         }

@@ -42,6 +42,10 @@ public final class JoinMessageHandler {
         } else {
             maybeSendKeepInventoryPrompt(player, data);
         }
+
+        // Sync the Bloody-Night state so a night already in progress shows
+        // its red fog immediately on join.
+        ModPayloads.sendBloodyNight(server, BloodyNightHandler.currentBloody());
     }
 
     /** Sends the keep-inventory prompt if it hasn't been asked before and

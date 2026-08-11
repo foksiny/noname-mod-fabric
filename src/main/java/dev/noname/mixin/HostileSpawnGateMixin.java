@@ -20,9 +20,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  *       first day of the world is completely normal) — natural night spawns,
  *       mob spawner blocks, structure templates, raids, zombie sieges,
  *       phantoms, wardens;</li>
- *   <li>from day 9 onward <em>every</em> other mob that is not a deliberate
- *       spawn is refused too — the world's natural animals stop appearing,
- *       so the day-9+ loot piles are the player's only source of food.</li>
+ *   <li>from day 9 to day 15 <em>every</em> other mob that is not a
+ *       deliberate spawn is refused too — the world's natural animals stop
+ *       appearing, so the day-9+ loot piles are the player's only source of
+ *       food. From day 16 on they spawn again — and, once hit, fight back
+ *       ({@link dev.noname.AnimalRevengeHandler}).</li>
  * </ul>
  *
  * <p>Spawn eggs and {@code /summon} are marked by {@link MobSpawnMixin}
@@ -51,9 +53,11 @@ public abstract class HostileSpawnGateMixin {
                 return;
             }
         } else {
-            // Everything else: normal until day 9; from day 9 on, no
-            // non-deliberate spawns at all.
-            if (day < ModConfig.scaledDay(9) || !ModConfig.isEnabled("natural_spawn_stop")) {
+            // Everything else: normal until day 9; from day 9 to day 15 no
+            // non-deliberate spawns at all (the world goes quiet, then the
+            // animals come back on day 16 — now with a grudge).
+            if (day < ModConfig.scaledDay(9) || day >= ModConfig.scaledDay(16)
+                    || !ModConfig.isEnabled("natural_spawn_stop")) {
                 return;
             }
         }

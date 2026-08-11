@@ -191,8 +191,9 @@ public final class SignPlacerHandler {
     }
 
     /** Wraps a message into lines of at most {@value #MAX_LINE_CHARS}
-     *  characters, breaking at spaces (hard-breaking long words). */
-    private static String[] wrapMessage(String message) {
+     *  characters, breaking at spaces (hard-breaking long words). Shared
+     *  with the day-10 question handler's sign. */
+    static String[] wrapMessage(String message) {
         if (message.length() <= MAX_LINE_CHARS) {
             return new String[]{message};
         }

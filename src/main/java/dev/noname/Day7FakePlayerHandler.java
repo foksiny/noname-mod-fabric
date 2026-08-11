@@ -174,6 +174,22 @@ public final class Day7FakePlayerHandler {
     }
 
     /**
+     * Destroys the given apparition with the Cross, cancels its chat line
+     * and frees the day-7 lock. {@return whether this handler owned the
+     * apparition}
+     */
+    public static boolean destroyApparition(ServerPlayer fake) {
+        if (apparitions.remove(fake)) {
+            fake.discard();
+            removeAtTick = -1;
+            ticksUntilChatLine = -1;
+            EventQueue.release("day7_fake");
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Dev/test hook — send the day-7 noon lonely line right now, regardless
      * of the day. Dispatched by {@code /noname event play day7_lonely}. Marks
      * the noon line as sent so the natural day-7 trigger never repeats it
